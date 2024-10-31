@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, Dimensions, StyleSheet, FlatList } from 'react-native';
+import { View, Text, Dimensions, StyleSheet, FlatList, ImageBackground } from 'react-native';
 
 const { width: viewportWidth } = Dimensions.get('window');
 
@@ -23,14 +23,16 @@ const CarouselSlider: React.FC = () => {
 
   const onMomentumScrollEnd = (event: any) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / (viewportWidth * 0.75)); // Szerokość slajdu
-    scrollToIndex(index); // Przewijanie do najbliższego slajdu
+    const index = Math.round(contentOffsetX / (viewportWidth * 0.75));
+    scrollToIndex(index);
   };
 
   const renderItem = ({ item }: { item: Slide }) => (
-    <View style={[styles.slide, { backgroundColor: item.color }]}>
-      <Text style={styles.title}>{item.title}</Text>
-    </View>
+    <ImageBackground
+      source={{ uri: 'https://via.placeholder.com/150' }}
+      style={styles.slide}
+      imageStyle={{ borderRadius: 10 }}
+    />
   );
 
   return (
@@ -40,13 +42,13 @@ const CarouselSlider: React.FC = () => {
       renderItem={renderItem}
       keyExtractor={(item) => item.title}
       horizontal
-      pagingEnabled={false} // Wyłączamy domyślne snapowanie
+      pagingEnabled={false}
       showsHorizontalScrollIndicator={false}
       style={styles.carousel}
-      contentContainerStyle={{ paddingHorizontal: 20 }} // Dostosowanie przestrzeni po bokach
-      onMomentumScrollEnd={onMomentumScrollEnd} // Przewijanie do slajdu
-      snapToInterval={viewportWidth * 0.75} // Ustawienie szerokości slajdu do snappowania
-      decelerationRate="fast" // Szybkie przewijanie
+      contentContainerStyle={{ paddingHorizontal: 20 }}
+      onMomentumScrollEnd={onMomentumScrollEnd}
+      snapToInterval={viewportWidth * 0.75}
+      decelerationRate="fast"
     />
   );
 };
@@ -56,13 +58,14 @@ const styles = StyleSheet.create({
     height: 200,
   },
   slide: {
-    width: viewportWidth * 0.75, // Ustaw szerokość slajdu
+    width: viewportWidth * 0.75,
     height: 200,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    overflow: 'hidden',
     padding: 20,
-    marginRight: 10, // Odstęp między slajdami
+    marginRight: 10,
   },
   title: {
     fontSize: 24,
