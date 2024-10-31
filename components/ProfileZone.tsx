@@ -10,7 +10,7 @@ const ProfileZone = ({ theme = 'dark' }) => {
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.profileSection, { backgroundColor: colors.background }]}>
-        <Avatar.Text size={64} label="name" style={[styles.avatar, { backgroundColor: colors.tint }]} />
+        <Avatar.Text size={64} label="JK" style={[styles.avatar, { backgroundColor: colors.tint }]} />
         <Text style={[styles.profileName, { color: colors.text }]}>Jan Kowalski</Text>
         <Text style={[styles.profileSubtext, { color: colors.icon }]}>Dane konta i ustawienia</Text>
       </View>

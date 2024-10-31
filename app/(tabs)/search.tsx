@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
-import { View, Text, StyleSheet, useColorScheme,TextInput } from 'react-native';
-import { List, IconButton } from 'react-native-paper';
+import { View, Text, StyleSheet, useColorScheme, TextInput } from 'react-native';
+import { List, Icon, Divider } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
 
 const categories = [
@@ -19,30 +19,36 @@ export default function SearchScreen() {
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: themeColors.background }]}>
             <View style={styles.header}>
                 <Text style={[styles.title, { color: themeColors.text }]}>Wszystkie kategorie</Text>
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Wyszukaj produkty..."
-                    placeholderTextColor="#888"
-                    selectionColor="#fff"
-                />
+                <View style={[styles.searchContainer, { backgroundColor: themeColors.background }]}>
+                    <Icon source="magnify" size={20} color={themeColors.icon}/>
+                    <TextInput
+                        style={[styles.searchInput, { color: themeColors.text }]}
+                        placeholder="Wyszukaj produkty..."
+                        placeholderTextColor="#888"
+                        selectionColor="#fff"
+                    />
+                </View>
             </View>
             <View style={styles.categoryList}>
                 {categories.map((category, index) => (
-                    <List.Item
-                        key={index}
-                        title={category.title}
-                        titleStyle={{ color: themeColors.text }}
-                        style={[styles.listItem, { backgroundColor: themeColors.cardbackground }]}
-                        left={() => <List.Icon icon={category.icon} color={themeColors.icon} />}
-                        right={() => <IconButton icon="chevron-right" />}
-                    />
+                    <View key={index} style={[styles.listItemContainer, { backgroundColor: themeColors.background }]}>
+                        <List.Item
+                            title={category.title}
+                            titleStyle={{ color: themeColors.text }}
+                            style={styles.listItem}
+                            left={() => <List.Icon icon={category.icon} color={themeColors.icon} />}
+                            right={() => <List.Icon icon="chevron-right" color={themeColors.icon} />}
+                        />
+                        <Divider style={[styles.divider, { backgroundColor: themeColors.icon }]} />
+                    </View>
                 ))}
-                <List.Item
-                    title="Trendy, promocje i nowości"
-                    titleStyle={[styles.promoTitle, { color: themeColors.tint }]}
-                    right={() => <IconButton icon="chevron-right"/>}
-                    style={[styles.listItem, { backgroundColor: themeColors.background }]}
-                />
+                <View style={[styles.listItemContainer, { backgroundColor: themeColors.background }]}>
+                    <List.Item
+                        title="Trendy, promocje i nowości"
+                        titleStyle={[styles.promoTitle, { color: themeColors.tint }]}
+                        right={() => <List.Icon icon="chevron-right" color={themeColors.icon} />}
+                    />
+                </View>
             </View>
         </ScrollView>
     );
@@ -51,6 +57,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
     container: {
         padding: 16,
+        flex: 1,
     },
     header: {
         marginTop: 30,
@@ -63,20 +70,37 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
         borderRadius: 8,
         paddingHorizontal: 10,
         color: '#fff',
     },
     categoryList: {
-        marginTop: 10,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 8,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+    },
+    searchIcon: {
+        marginRight: 8,
+    },
+    listItemContainer: {
+        marginVertical: 4,
+        overflow: 'hidden', // Ensures that the divider doesn't extend beyond the rounded corners
     },
     listItem: {
-        marginVertical: 4,
-        borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+    },
+    divider: {
+        height: 1,
     },
     promoTitle: {
         fontWeight: 'bold',
     },
 });
+

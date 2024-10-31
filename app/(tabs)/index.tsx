@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, useColorScheme } from 'react-native';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,TextInput } from 'react-native';
+import {Icon } from 'react-native-paper';
 import ProductZone from '@/components/ProductZone';
 import CarouselSlider from '@/components/Slider';
 import { Colors } from '@/constants/Colors';
@@ -13,12 +14,15 @@ export default function HomeScreen() {
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: themeColors.background }]}>
             <View style={styles.header}>
                 <Text style={[styles.greeting, { color: themeColors.text }]}>Dzień dobry</Text>
-                <TextInput
-                    style={[styles.searchInput, { backgroundColor: themeColors.cardbackground, color: themeColors.text, borderColor: themeColors.icon }]}
-                    placeholder="Wyszukaj produkty..."
-                    placeholderTextColor={themeColors.icon}
-                    selectionColor={themeColors.tint}
-                />
+                <View style={[styles.searchContainer, { backgroundColor: themeColors.background }]}>
+                    <Icon source="magnify" size={20} color={themeColors.icon}/>
+                    <TextInput
+                        style={[styles.searchInput, { color: themeColors.text }]}
+                        placeholder="Wyszukaj produkty..."
+                        placeholderTextColor="#888"
+                        selectionColor="#fff"
+                    />
+                </View>
             </View>
             <CarouselSlider />
             <ProductZone />
@@ -41,8 +45,22 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         height: 40,
-        borderWidth: 1,
         borderRadius: 8,
         paddingHorizontal: 10,
+        color: '#fff',
+    },
+    categoryList: {
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 40,
+        borderRadius: 8,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        paddingHorizontal: 10,
+    },
+    searchIcon: {
+        marginRight: 8,
     },
 });
