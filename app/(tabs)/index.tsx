@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
         paddingRight:10 //czarny bok po prawo
     },
     header: {
-        marginBottom: 16,
+        marginBottom: 7,
         padding:16
     },
     greeting: {

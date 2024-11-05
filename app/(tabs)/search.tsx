@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {
     marginVertical: 4,
-    overflow: "hidden", // Ensures that the divider doesn't extend beyond the rounded corners
+    overflow: "hidden",
   },
   listItem: {
     paddingVertical: 8,
