@@ -12,7 +12,7 @@ import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import ProfileZone from "@/components/ProfileZone";
 const ProfileScreen: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true);//zmień na false do logowania
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false); //zmień na false do logowania
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const colorScheme = useColorScheme();

@@ -15,6 +15,7 @@ const RegisterScreen: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
@@ -72,6 +73,21 @@ const RegisterScreen: React.FC = () => {
           keyboardType="email-address"
           autoCapitalize="none"
         />
+           <TextInput
+            style={[
+              styles.input,
+              {
+                borderColor: themeColors.icon,
+                backgroundColor: themeColors.background,
+                color: themeColors.text,
+              },
+            ]}
+            placeholder="Numer telefonu"
+            placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            keyboardType="phone-pad"
+          />
         <TextInput
           style={[
             styles.input,
