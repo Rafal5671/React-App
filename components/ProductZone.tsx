@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator,ScrollView,Image  } from "react-native";
-import { Product } from "@/types/Product"; // Upewnij się, że ścieżka jest zgodna
-import ProductGrid from "./ProductGrid"; // Importuj ProductGrid
+import { View, StyleSheet, ActivityIndicator,ScrollView } from "react-native";
+import { Product } from "@/types/Product"; 
+import ProductGrid from "./ProductGrid";
 import { Text } from 'react-native-paper';
 const sampleProducts: Product[] = [
     {
@@ -11,6 +11,7 @@ const sampleProducts: Product[] = [
         price: 20.00,
         cutPrice: 25.00,
         quantity: 5,
+        description: "Ekran: 6.5 cala OLED, Procesor: Octa-Core 3.0GHz, RAM: 8 GB, Pamięć: 128 GB"
     },
     {
         id: 2,
@@ -19,6 +20,7 @@ const sampleProducts: Product[] = [
         price: 15.00,
         cutPrice: null,
         quantity: 0,
+        description: "Ekran: 6.5 cala OLED, Procesor: Octa-Core 3.0GHz, RAM: 8 GB, Pamięć: 128 GB"
     },
     {
         id: 3,
@@ -27,6 +29,7 @@ const sampleProducts: Product[] = [
         price: 30.00,
         cutPrice: 35.00,
         quantity: 10,
+        description: "Ekran: 6.5 cala OLED, Procesor: Octa-Core 3.0GHz, RAM: 8 GB, Pamięć: 128 GB"
     },
 ];
 

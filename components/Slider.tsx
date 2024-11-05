@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, Text, Dimensions, StyleSheet, FlatList, ImageBackground } from 'react-native';
+import { Dimensions, StyleSheet, FlatList, ImageBackground } from 'react-native';
 
 const { width: viewportWidth } = Dimensions.get('window');
 

@@ -105,18 +105,7 @@ const ProfileScreen: React.FC = () => {
     </View>
   );
 };
-const MenuItem = ({ title, themeColors, notificationCount }: any) => (
-  <TouchableOpacity
-    style={[styles.menuItem, { backgroundColor: themeColors.background }]}
-  >
-    <Text style={[styles.menuText, { color: themeColors.text }]}>{title}</Text>
-    {notificationCount ? (
-      <View style={styles.notificationBadge}>
-        <Text style={styles.notificationText}>{notificationCount}</Text>
-      </View>
-    ) : null}
-  </TouchableOpacity>
-);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

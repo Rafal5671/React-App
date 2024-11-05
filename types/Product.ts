@@ -5,4 +5,5 @@ export interface Product {
     price: number;
     cutPrice?: number | null; // Opcjonalne pole
     quantity: number;
+    description: string;
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, Image, View, useColorScheme } from "react-native";
-import { Card, Title, Button, Text } from "react-native-paper";
+import { Card, Title, Text } from "react-native-paper";
 import { Product } from "@/types/Product";
 import { Colors } from "@/constants/Colors";
 
@@ -20,29 +20,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
     return (
         <Card style={[styles.card, { backgroundColor: themeColors.cardbackground, shadowColor: themeColors.icon }]}>
-            <TouchableOpacity onPress={() => alert(`Zobacz szczegóły produktu: ${product.productName}`)} style={styles.row}>
-                {/* Product Image on the Left */}
+            <TouchableOpacity activeOpacity={0.8} onPress={() => alert(`Zobacz szczegóły produktu: ${product.productName}`)} style={styles.row}>
+                
+                {/* Product Image */}
                 <Image source={{ uri: product.image }} style={styles.image} />
                 
-                {/* Product Details on the Right */}
+                {/* Product Details */}
                 <Card.Content style={styles.content}>
+                    {/* Product Name */}
                     <Title style={[styles.title, { color: themeColors.text }]}>{product.productName}</Title>
                     
-                    {/* Price Section */}
-                    {product.cutPrice && (
-                        <Text style={[styles.cutPrice, { color: themeColors.icon }]}>{product.cutPrice} zł</Text>
-                    )}
-                    <Text style={[styles.price, { color: themeColors.text }]}>{product.price} zł</Text>
-                    
-                    {/* Add to Cart Button */}
-                    <Button
-                        mode="contained"
-                        onPress={addToCartHandler}
-                        style={[styles.button, { backgroundColor: themeColors.tint }]}
-                        labelStyle={{ color: themeColors.background }}
-                    >
-                        Dodaj do koszyka
-                    </Button>
+                    {/* Product Description */}
+                    <Text style={[styles.description, { color: themeColors.text }]}>{product.description}</Text>
+
+                    {/* Price Section at the Bottom */}
+                    <View style={styles.priceContainer}>
+                        {product.cutPrice && (
+                            <Text style={[styles.cutPrice, { color: themeColors.icon }]}>{product.cutPrice} zł</Text>
+                        )}
+                        <Text style={[styles.price, { color: themeColors.text }]}>{product.price} zł</Text>
+                    </View>
                 </Card.Content>
             </TouchableOpacity>
         </Card>
@@ -53,7 +50,7 @@ const styles = StyleSheet.create({
     card: {
         marginVertical: 8,
         width: '100%',
-        height: 200,
+        height: 180,
         borderRadius: 10,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -65,7 +62,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     image: {
-        width: 120,
+        width: 125,
         height: '100%',
         resizeMode: "cover",
         borderTopLeftRadius: 10,
@@ -75,25 +72,30 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: 10,
-        justifyContent: 'center',
+        paddingVertical: 8,
+        justifyContent: 'space-between', // Space out title, description, and price
     },
     title: {
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: 'bold',
         marginBottom: 4,
+    },
+    description: {
+        fontSize: 14,
+        marginVertical: 8, // Adds space below the title and above the price
+    },
+    priceContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     cutPrice: {
         textDecorationLine: 'line-through',
         fontSize: 14,
-        marginTop: 2,
+        marginRight: 8,
     },
     price: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 6,
-    },
-    button: {
-        marginTop: 10,
     },
 });
 
