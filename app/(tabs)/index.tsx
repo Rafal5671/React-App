@@ -32,10 +32,11 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        paddingRight:10 //czarny bok po prawo
     },
     header: {
         marginBottom: 16,
+        padding:16
     },
     greeting: {
         fontSize: 24,

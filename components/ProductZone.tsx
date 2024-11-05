@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, ScrollView, Image, Text, useColorScheme } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ScrollView, Image, Text, useColorScheme,TouchableOpacity  } from "react-native";
 import { Product } from "@/types/Product";
 import { Card, Title, Paragraph } from 'react-native-paper';
-import { Colors } from "@/constants/Colors";  // Adjust the path if necessary
+import { Colors } from "@/constants/Colors";
 
 const sampleProducts: Product[] = [
     {
@@ -38,18 +38,20 @@ const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }>
     const colors = Colors[colorScheme];
 
     return (
+        <TouchableOpacity onPress={() => console.log(`Clicked on ${product.productName}`)}>
         <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
             <Image source={{ uri: product.image }} style={styles.productImage} />
             <Card.Content>
                 <Title style={{ color: colors.text }}>{product.productName}</Title>
-                <Paragraph style={{ color: colors.text }}>Cena: {product.price} zł</Paragraph>
+                <Paragraph style={{ color: colors.text }}>{product.price} zł</Paragraph>
                 {product.cutPrice && (
                     <Paragraph style={[styles.cutPrice, { color: colors.icon }]}>
-                        Stara cena: {product.cutPrice} zł
+                        {product.cutPrice} zł
                     </Paragraph>
                 )}
             </Card.Content>
         </Card>
+        </TouchableOpacity>
     );
 };
 
@@ -71,7 +73,7 @@ const ProductCarousel: React.FC<{ title: string; products: Product[]; colorSchem
 const ProductZone: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
-    const colorScheme = useColorScheme() || 'light';  // Default to light if null
+    const colorScheme = useColorScheme() || 'light';
 
     useEffect(() => {
         const fetchProducts = () => {
@@ -105,7 +107,8 @@ const ProductZone: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 16,
+        marginLeft:15,
+        marginTop:10,
     },
     loadingContainer: {
         flex: 1,
@@ -125,6 +128,7 @@ const styles = StyleSheet.create({
     },
     productCard: {
         width: 150,
+        height:270,
         marginRight: 12,
         borderRadius: 8,
     },
