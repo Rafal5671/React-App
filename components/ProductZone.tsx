@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator,ScrollView } from "react-native";
-import { Product } from "@/types/Product"; 
-import ProductGrid from "./ProductGrid";
-import { Text } from 'react-native-paper';
+import { View, StyleSheet, ActivityIndicator, ScrollView, Image, Text, useColorScheme } from "react-native";
+import { Product } from "@/types/Product";
+import { Card, Title, Paragraph } from 'react-native-paper';
+import { Colors } from "@/constants/Colors";  // Adjust the path if necessary
+
 const sampleProducts: Product[] = [
     {
         id: 1,
@@ -33,9 +34,44 @@ const sampleProducts: Product[] = [
     },
 ];
 
+const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }> = ({ product, colorScheme }) => {
+    const colors = Colors[colorScheme];
+
+    return (
+        <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
+            <Image source={{ uri: product.image }} style={styles.productImage} />
+            <Card.Content>
+                <Title style={{ color: colors.text }}>{product.productName}</Title>
+                <Paragraph style={{ color: colors.text }}>Cena: {product.price} zł</Paragraph>
+                {product.cutPrice && (
+                    <Paragraph style={[styles.cutPrice, { color: colors.icon }]}>
+                        Stara cena: {product.cutPrice} zł
+                    </Paragraph>
+                )}
+            </Card.Content>
+        </Card>
+    );
+};
+
+const ProductCarousel: React.FC<{ title: string; products: Product[]; colorScheme: 'light' | 'dark' }> = ({ title, products, colorScheme }) => {
+    const colors = Colors[colorScheme];
+
+    return (
+        <View style={styles.carouselContainer}>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>{title}</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.carousel}>
+                {products.map((product) => (
+                    <ProductCard key={product.id} product={product} colorScheme={colorScheme} />
+                ))}
+            </ScrollView>
+        </View>
+    );
+};
+
 const ProductZone: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
+    const colorScheme = useColorScheme() || 'light';  // Default to light if null
 
     useEffect(() => {
         const fetchProducts = () => {
@@ -44,22 +80,24 @@ const ProductZone: React.FC = () => {
                 setLoading(false);
             }, 1000);
         };
-
         fetchProducts();
     }, []);
 
+    const colors = Colors[colorScheme];
+
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#0000ff" />
-                <Text>Ładowanie produktów...</Text>
+            <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
+                <ActivityIndicator size="large" color={colors.tint} />
+                <Text style={{ color: colors.text }}>Ładowanie produktów...</Text>
             </View>
         );
     }
 
     return (
-        <ScrollView>
-            <ProductGrid products={products} />
+        <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+            <ProductCarousel title="Bestsellery" products={products} colorScheme={colorScheme} />
+            <ProductCarousel title="Polecamy" products={products} colorScheme={colorScheme} />
         </ScrollView>
     );
 };
@@ -74,22 +112,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    titleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
-      },
-      stepContainer: {
-        gap: 8,
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
         marginBottom: 8,
-      },
-      reactLogo: {
-        height: 178,
-        width: 290,
-        bottom: 0,
-        left: 0,
-        position: 'absolute',
-      },
+    },
+    carouselContainer: {
+        marginBottom: 16,
+    },
+    carousel: {
+        flexDirection: 'row',
+    },
+    productCard: {
+        width: 150,
+        marginRight: 12,
+        borderRadius: 8,
+    },
+    productImage: {
+        width: 150,
+        height: 150,
+        borderRadius: 8,
+    },
+    cutPrice: {
+        textDecorationLine: 'line-through',
+    },
 });
 
 export default ProductZone;

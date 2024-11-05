@@ -1,10 +1,5 @@
-import React, { useRef } from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  FlatList,
-  ImageBackground,
-} from "react-native";
+import React from "react";
+import { Dimensions, StyleSheet, ScrollView, View, ImageBackground, Text } from "react-native";
 
 const { width: viewportWidth } = Dimensions.get("window");
 
@@ -20,48 +15,33 @@ const DATA: Slide[] = [
 ];
 
 const CarouselSlider: React.FC = () => {
-  const flatListRef = useRef<FlatList<Slide>>(null);
-
-  const scrollToIndex = (index: number) => {
-    flatListRef.current?.scrollToIndex({ animated: true, index });
-  };
-
-  const onMomentumScrollEnd = (event: any) => {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / (viewportWidth * 0.75));
-    scrollToIndex(index);
-  };
-
-  const renderItem = ({ item }: { item: Slide }) => (
-    <ImageBackground
-      source={{ uri: "https://via.placeholder.com/150" }}
-      style={styles.slide}
-      imageStyle={{ borderRadius: 10 }}
-    />
-  );
-
   return (
-    <FlatList
-      ref={flatListRef}
-      data={DATA}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.title}
+    <ScrollView
       horizontal
       pagingEnabled={false}
       showsHorizontalScrollIndicator={false}
-      style={styles.carousel}
-      contentContainerStyle={{ paddingHorizontal: 20 }}
-      onMomentumScrollEnd={onMomentumScrollEnd}
+      contentContainerStyle={styles.carousel}
       snapToInterval={viewportWidth * 0.75}
       decelerationRate="fast"
-    />
+    >
+      {DATA.map((item, index) => (
+        <View key={index} style={[styles.slide]}>
+          <ImageBackground
+            source={{ uri: "https://via.placeholder.com/150" }}
+            style={styles.slide}
+            imageStyle={{ borderRadius: 10 }}
+          >
+          </ImageBackground>
+        </View>
+      ))}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   carousel: {
+    paddingHorizontal: 20,
     height: 200,
-    marginBottom: 8
   },
   slide: {
     width: viewportWidth * 0.75,
