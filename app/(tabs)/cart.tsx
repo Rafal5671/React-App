@@ -1,23 +1,22 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import EmptyCart from '@/components/EmptyCart';
+import FullCart from '@/components/FullCart';
+const CartScreen: React.FC = () => {
+  // Assume cartCount represents the number of items in the cart
+  const [cartCount, setCartCount] = useState<number>(2);
+  const removeFromCart = () => {
+    setCartCount(prevCount => Math.max(prevCount - 1, 0)); // Ensure count does not go below 0
+  };
 
-const CartScreen = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Your Shopping Cart</Text>
-    </View>
+    <>
+      {cartCount > 0 ? (
+        <FullCart removeFromCart={removeFromCart} />
+      ) : (
+        <EmptyCart />
+      )}
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
-  },
-});
 
 export default CartScreen;

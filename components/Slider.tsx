@@ -1,7 +1,12 @@
-import React, { useRef } from 'react';
-import { Dimensions, StyleSheet, FlatList, ImageBackground } from 'react-native';
+import React, { useRef } from "react";
+import {
+  Dimensions,
+  StyleSheet,
+  FlatList,
+  ImageBackground,
+} from "react-native";
 
-const { width: viewportWidth } = Dimensions.get('window');
+const { width: viewportWidth } = Dimensions.get("window");
 
 interface Slide {
   title: string;
@@ -9,9 +14,9 @@ interface Slide {
 }
 
 const DATA: Slide[] = [
-  { title: 'Slide 1', color: '#ff9999' },
-  { title: 'Slide 2', color: '#99ff99' },
-  { title: 'Slide 3', color: '#9999ff' },
+  { title: "Slide 1", color: "#ff9999" },
+  { title: "Slide 2", color: "#99ff99" },
+  { title: "Slide 3", color: "#9999ff" },
 ];
 
 const CarouselSlider: React.FC = () => {
@@ -29,7 +34,7 @@ const CarouselSlider: React.FC = () => {
 
   const renderItem = ({ item }: { item: Slide }) => (
     <ImageBackground
-      source={{ uri: 'https://via.placeholder.com/150' }}
+      source={{ uri: "https://via.placeholder.com/150" }}
       style={styles.slide}
       imageStyle={{ borderRadius: 10 }}
     />
@@ -56,21 +61,22 @@ const CarouselSlider: React.FC = () => {
 const styles = StyleSheet.create({
   carousel: {
     height: 200,
+    marginBottom: 8
   },
   slide: {
     width: viewportWidth * 0.75,
     height: 200,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 10,
-    overflow: 'hidden',
+    overflow: "hidden",
     padding: 20,
     marginRight: 10,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontWeight: "bold",
+    color: "#fff",
   },
 });
 
