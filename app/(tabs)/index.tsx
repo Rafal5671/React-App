@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 8,
-        marginTop:10
+        marginTop:15
     },
     searchInput: {
         height: 40,

@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
-  Image,
 } from "react-native";
 import { TextInput } from "react-native";
 import { Colors } from "@/constants/Colors";
