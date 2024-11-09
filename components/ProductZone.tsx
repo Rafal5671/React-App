@@ -13,7 +13,13 @@ const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }>
             <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
                 <Image source={{ uri: product.image }} style={styles.productImage} />
                 <Card.Content>
-                    <Title style={{ color: colors.text }}>{product.productName}</Title>
+                    <Title
+                        style={{ color: colors.text }}
+                        numberOfLines={2}              // Limit title to 2 lines
+                        ellipsizeMode="tail"           // Show ellipsis if text overflows
+                    >
+                        {product.productName}
+                    </Title>
                     <Paragraph style={{ color: colors.text }}>{product.price} zł</Paragraph>
                     {product.cutPrice && (
                         <Paragraph style={[styles.cutPrice, { color: colors.icon }]}>

@@ -13,22 +13,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const colorScheme = useColorScheme();
     const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
-    const addToCartHandler = () => {
-        console.log(`Dodano do koszyka: ${product.productName}`);
-        setOpen(true);
-    };
-
     return (
         <Card style={[styles.card, { backgroundColor: themeColors.cardbackground, shadowColor: themeColors.icon }]}>
             <TouchableOpacity activeOpacity={0.8} onPress={() => alert(`Zobacz szczegóły produktu: ${product.productName}`)} style={styles.row}>
-                
+
                 {/* Product Image */}
                 <Image source={{ uri: product.image }} style={styles.image} />
-                
+
                 {/* Product Details */}
                 <Card.Content style={styles.content}>
                     {/* Product Name */}
-                    <Title style={[styles.title, { color: themeColors.text }]}>{product.productName}</Title>
+                    <Title
+                        style={[styles.title, { color: themeColors.text }]}
+                        numberOfLines={2}              // Limit title to 2 lines
+                        ellipsizeMode="tail"           // Show ellipsis if text overflows
+                    >
+                        {product.productName}
+                    </Title>
                     
                     {/* Product Description */}
                     <Text style={[styles.description, { color: themeColors.text }]}>{product.description}</Text>
