@@ -1,60 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, ScrollView, Image, Text, useColorScheme,TouchableOpacity  } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ScrollView, Image, Text, useColorScheme, TouchableOpacity } from "react-native";
 import { Product } from "@/types/Product";
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { Colors } from "@/constants/Colors";
 
-const sampleProducts: Product[] = [
-    {
-        id: 1,
-        productName: "Przykładowy produkt 1",
-        image: "https://via.placeholder.com/150",
-        price: 20.00,
-        cutPrice: 25.00,
-        quantity: 5,
-        description: "Ekran: 6.5 cala OLED, Procesor: Octa-Core 3.0GHz, RAM: 8 GB, Pamięć: 128 GB"
-    },
-    {
-        id: 2,
-        productName: "Przykładowy produkt 2",
-        image: "https://via.placeholder.com/150",
-        price: 15.00,
-        cutPrice: null,
-        quantity: 0,
-        description: "Ekran: 6.5 cala OLED, Procesor: Octa-Core 3.0GHz, RAM: 8 GB, Pamięć: 128 GB"
-    },
-    {
-        id: 3,
-        productName: "Przykładowy produkt 3",
-        image: "https://via.placeholder.com/150",
-        price: 30.00,
-        cutPrice: 35.00,
-        quantity: 10,
-        description: "Ekran: 6.5 cala OLED, Procesor: Octa-Core 3.0GHz, RAM: 8 GB, Pamięć: 128 GB"
-    },
-];
 
 const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }> = ({ product, colorScheme }) => {
     const colors = Colors[colorScheme];
 
     return (
         <TouchableOpacity onPress={() => console.log(`Clicked on ${product.productName}`)}>
-        <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
-            <Image source={{ uri: product.image }} style={styles.productImage} />
-            <Card.Content>
-                <Title style={{ color: colors.text }}>{product.productName}</Title>
-                <Paragraph style={{ color: colors.text }}>{product.price} zł</Paragraph>
-                {product.cutPrice && (
-                    <Paragraph style={[styles.cutPrice, { color: colors.icon }]}>
-                        {product.cutPrice} zł
-                    </Paragraph>
-                )}
-            </Card.Content>
-        </Card>
+            <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
+                <Image source={{ uri: product.image }} style={styles.productImage} />
+                <Card.Content>
+                    <Title style={{ color: colors.text }}>{product.productName}</Title>
+                    <Paragraph style={{ color: colors.text }}>{product.price} zł</Paragraph>
+                    {product.cutPrice && (
+                        <Paragraph style={[styles.cutPrice, { color: colors.icon }]}>
+                            {product.cutPrice} zł
+                        </Paragraph>
+                    )}
+                </Card.Content>
+            </Card>
         </TouchableOpacity>
     );
 };
 
+// Product Carousel Component
 const ProductCarousel: React.FC<{ title: string; products: Product[]; colorScheme: 'light' | 'dark' }> = ({ title, products, colorScheme }) => {
     const colors = Colors[colorScheme];
 
@@ -70,17 +42,27 @@ const ProductCarousel: React.FC<{ title: string; products: Product[]; colorSchem
     );
 };
 
+// Main Product Zone Component
 const ProductZone: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
-    const colorScheme = useColorScheme() || 'light';
+    const colorScheme = useColorScheme() || "light";
 
     useEffect(() => {
-        const fetchProducts = () => {
-            setTimeout(() => {
-                setProducts(sampleProducts);
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch("http://192.168.100.8:8082/api/products"); // Replace with your actual backend IP
+                if (!response.ok) {
+                    throw new Error("Failed to fetch products");
+                }
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                alert("Failed to load products. Please check your network connection.");
+            } finally {
                 setLoading(false);
-            }, 1000);
+            }
         };
         fetchProducts();
     }, []);
@@ -107,8 +89,8 @@ const ProductZone: React.FC = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginLeft:15,
-        marginTop:10,
+        marginLeft: 15,
+        marginTop: 10,
     },
     loadingContainer: {
         flex: 1,
@@ -127,14 +109,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     productCard: {
-        width: 150,
-        height:270,
+        width: 300,
+        height: 370,
         marginRight: 12,
         borderRadius: 8,
     },
     productImage: {
-        width: 150,
-        height: 150,
+        width: 300,
+        height: 250,
         borderRadius: 8,
     },
     cutPrice: {
