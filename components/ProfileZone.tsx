@@ -1,32 +1,33 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  useColorScheme,
-  TouchableOpacity,
-} from "react-native";
+import { View, StyleSheet, ScrollView, useColorScheme, TouchableOpacity } from "react-native";
 import { Avatar, List, Divider, Text } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 
-const ProfileZone = () => {
+interface User {
+  name: string;
+  lastName: string;
+  // Add any other user properties you might have
+}
+
+interface ProfileZoneProps {
+  user: User | null;
+  onLogout: () => void;
+}
+
+const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
   const colorScheme = useColorScheme();
   const colors = colorScheme === "dark" ? Colors.dark : Colors.light;
 
   return (
-    <ScrollView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
-      <View
-        style={[styles.profileSection, { backgroundColor: colors.background }]}
-      >
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.profileSection, { backgroundColor: colors.background }]}>
         <Avatar.Text
           size={64}
-          label="JK"
+          label={`${user?.name?.charAt(0) || ""}${user?.lastName?.charAt(0) || ""}`}
           style={[styles.avatar, { backgroundColor: colors.tint }]}
         />
         <Text style={[styles.profileName, { color: colors.text }]}>
-          Jan Kowalski
+          {user?.name} {user?.lastName}
         </Text>
         <Text style={[styles.profileSubtext, { color: colors.icon }]}>
           Dane konta i ustawienia
@@ -36,9 +37,7 @@ const ProfileZone = () => {
       <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
 
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>
-          Zakupy
-        </Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>Zakupy</Text>
         <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
           <List.Item
             title="Zamówienia"
@@ -81,7 +80,7 @@ const ProfileZone = () => {
         </TouchableOpacity>
       </View>
 
-      <Divider style={styles.divider} />
+      <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Pomoc</Text>
@@ -115,7 +114,11 @@ const ProfileZone = () => {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity activeOpacity={0.8} style={styles.logoutButton}>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={[styles.logoutButton, { backgroundColor: "#FF5A5F" }]}
+        onPress={onLogout}
+      >
         <Text style={styles.logoutText}>Wyloguj się</Text>
       </TouchableOpacity>
 
@@ -151,6 +154,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
+    paddingLeft: 16,
   },
   badge: {
     backgroundColor: "#0a7ea4",
@@ -166,7 +170,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   logoutButton: {
-    backgroundColor: "#FF5A5F",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,

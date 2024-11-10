@@ -26,11 +26,49 @@ const RegisterScreen: React.FC = () => {
   const isDarkMode = colorScheme === "dark";
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
 
-  const handleRegister = () => {
-    if (acceptTerms && dataConsent) {
-      router.push("/profile");
-    } else {
+  const handleRegister = async () => {
+    // Basic validation
+    if (password !== confirmPassword) {
+      alert("Hasła nie są zgodne!");
+      return;
+    }
+
+    if (!acceptTerms || !dataConsent) {
       alert("Proszę zaakceptować regulamin i wyrazić zgodę na przetwarzanie danych.");
+      return;
+    }
+
+    // Prepare user data
+    const userData = {
+      name: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phoneNumber,
+      password: password,
+    };
+
+    try {
+      const response = await fetch("http://192.168.100.8:8082/api/register", { // Replace with your backend IP
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // If the user is successfully registered, navigate to the profile screen
+        alert("Rejestracja zakończona sukcesem!");
+        router.push("/profile");
+      } else {
+        // If there's an error with the registration, show it
+        alert(data.message || "Wystąpił błąd podczas rejestracji.");
+      }
+    } catch (error) {
+      console.error("Error during registration:", error);
+      alert("Wystąpił błąd. Spróbuj ponownie.");
     }
   };
 
@@ -73,21 +111,17 @@ const RegisterScreen: React.FC = () => {
           keyboardType="email-address"
           autoCapitalize="none"
         />
-           <TextInput
-            style={[
-              styles.input,
-              {
-                borderColor: themeColors.icon,
-                backgroundColor: themeColors.background,
-                color: themeColors.text,
-              },
-            ]}
-            placeholder="Numer telefonu"
-            placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            keyboardType="phone-pad"
-          />
+        <TextInput
+          style={[
+            styles.input,
+            { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+          ]}
+          placeholder="Numer telefonu"
+          placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+        />
         <TextInput
           style={[
             styles.input,
