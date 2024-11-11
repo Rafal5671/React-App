@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, useColorScheme, FlatList, Image } from "react-native";
 import { Text, Button, IconButton, Divider } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
-import { useRouter } from "expo-router";
+import { useRouter } from "expo-router"; // Import useRouter
 
 interface FullCartProps {
   removeFromCart: () => void;
 }
 
 const FullCart: React.FC<FullCartProps> = ({ removeFromCart }) => {
-  const router = useRouter();
+  const router = useRouter(); // Initialize router
   const colorScheme = useColorScheme();
   const colors = colorScheme === "dark" ? Colors.dark : Colors.light;
 
@@ -35,7 +35,9 @@ const FullCart: React.FC<FullCartProps> = ({ removeFromCart }) => {
     setCartItems(updatedCart);
 
     // Call removeFromCart when the cart becomes empty
+    if (updatedCart.length === 0) {
       removeFromCart();
+    }
   };
 
   const totalAmount =
@@ -87,7 +89,7 @@ const FullCart: React.FC<FullCartProps> = ({ removeFromCart }) => {
       </View>
       <Button
         mode="contained"
-        onPress={() => router.push("/")}
+        onPress={() => router.push("/delivery")} // Navigate to delivery.tsx
         style={[styles.checkoutButton, { backgroundColor: colors.tint }]}
         labelStyle={{ color: colors.background }}
       >
