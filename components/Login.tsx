@@ -2,8 +2,15 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, TextInput, Alert } from "react-native";
 import { Colors } from "@/constants/Colors";
 
+interface User {
+  name: string;
+  lastName: string;
+  // Add any other user properties you might have
+}
+
+
 interface LoginProps {
-  onLoginSuccess: () => void;  // Callback function to handle successful login
+  onLoginSuccess: (userData: User) => void;  // Callback function to handle successful login
 }
 
 const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
