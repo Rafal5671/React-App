@@ -3,13 +3,18 @@ import { View, StyleSheet, ActivityIndicator, ScrollView, Image, Text, useColorS
 import { Product } from "@/types/Product";
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { Colors } from "@/constants/Colors";
-
+import { useRouter } from "expo-router";
 
 const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }> = ({ product, colorScheme }) => {
     const colors = Colors[colorScheme];
+    const router = useRouter();
+
+    const handleProductClick = () => {
+        router.push(`/product/${product.id}`); // Navigate to the product details screen with the product ID
+    };
 
     return (
-        <TouchableOpacity onPress={() => console.log(`Clicked on ${product.productName}`)}>
+        <TouchableOpacity onPress={handleProductClick}>
             <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
                 <Image source={{ uri: product.image }} style={styles.productImage} />
                 <Card.Content>

@@ -46,16 +46,12 @@
       </intent-filter>
 
       <!-- Deep Linking & Universal Linking Configuration -->
-      <intent-filter android:autoVerify="true">
+      <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-
-        <!-- Handle custom app scheme -->
-        <data android:scheme="myapp" android:host="open" />
-
-        <!-- Handle universal link (update host to your domain) -->
-        <data android:scheme="https" android:host="www.yourwebsite.com" />
+        <data android:scheme="myapp"/>
+        <data android:scheme="com.app.ReactAPP"/>
       </intent-filter>
     </activity>
 
