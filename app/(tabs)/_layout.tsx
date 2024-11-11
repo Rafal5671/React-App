@@ -52,6 +52,12 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="product/[id]"
+        options={{
+          href: null, // To spowoduje, że zakładka nie pojawi się na pasku
+        }}
+      />
     </Tabs>
   );
 }
