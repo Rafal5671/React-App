@@ -10,7 +10,7 @@ const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }>
     const router = useRouter();
 
     const handleProductClick = () => {
-        router.push(`/product/${product.id}`); // Navigate to the product details screen with the product ID
+        router.push(`/product/${product.id}`);
     };
 
     return (
@@ -20,8 +20,8 @@ const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }>
                 <Card.Content>
                     <Title
                         style={{ color: colors.text }}
-                        numberOfLines={2}              // Limit title to 2 lines
-                        ellipsizeMode="tail"           // Show ellipsis if text overflows
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
                     >
                         {product.productName}
                     </Title>
@@ -37,7 +37,6 @@ const ProductCard: React.FC<{ product: Product; colorScheme: 'light' | 'dark' }>
     );
 };
 
-// Product Carousel Component
 const ProductCarousel: React.FC<{ title: string; products: Product[]; colorScheme: 'light' | 'dark' }> = ({ title, products, colorScheme }) => {
     const colors = Colors[colorScheme];
 
@@ -53,7 +52,6 @@ const ProductCarousel: React.FC<{ title: string; products: Product[]; colorSchem
     );
 };
 
-// Main Product Zone Component
 const ProductZone: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [products, setProducts] = useState<Product[]>([]);
@@ -62,7 +60,7 @@ const ProductZone: React.FC = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch("http://192.168.100.8:8082/api/products"); // Replace with your actual backend IP
+                const response = await fetch("http://192.168.100.8:8082/api/products");
                 if (!response.ok) {
                     throw new Error("Failed to fetch products");
                 }
@@ -89,10 +87,13 @@ const ProductZone: React.FC = () => {
         );
     }
 
+    // Filter products by rating for the "Polecamy" section
+    const recommendedProducts = products.filter(product => product.rating > 4.0);
+
     return (
         <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
             <ProductCarousel title="Bestsellery" products={products} colorScheme={colorScheme} />
-            <ProductCarousel title="Polecamy" products={products} colorScheme={colorScheme} />
+            <ProductCarousel title="Polecamy" products={recommendedProducts} colorScheme={colorScheme} />
         </ScrollView>
     );
 };
