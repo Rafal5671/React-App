@@ -1,20 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import EmptyCart from '@/components/EmptyCart';
 import FullCart from '@/components/FullCart';
+import { Product } from '@/types/Product';
+
 const CartScreen: React.FC = () => {
-  const [cartCount, setCartCount] = useState<number>(2);
-  const removeFromCart = () => {
-    setCartCount(prevCount => Math.max(prevCount - 1, 0)); // Ensure count does not go below 0
+  const [cartItems, setCartItems] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const cartData = await AsyncStorage.getItem('cart');
+        if (cartData) {
+          setCartItems(JSON.parse(cartData));
+        }
+      } catch (error) {
+        console.error("Error loading cart data:", error);
+      }
+    };
+
+    loadCart();
+  }, []);
+
+  const handleRemoveFromCart = (productId: string) => {
+    setCartItems((prevItems) => {
+      const updatedItems = prevItems.filter((item) => item.id !== productId);
+      AsyncStorage.setItem('cart', JSON.stringify(updatedItems)); // Save the updated cart back to AsyncStorage
+      return updatedItems;
+    });
   };
 
-  return (
-    <>
-      {cartCount > 0 ? (
-        <FullCart removeFromCart={removeFromCart} />
-      ) : (
-        <EmptyCart />
-      )}
-    </>
+  return cartItems.length > 0 ? (
+    <FullCart cartItems={cartItems} removeFromCart={handleRemoveFromCart} />
+  ) : (
+    <EmptyCart />
   );
 };
 

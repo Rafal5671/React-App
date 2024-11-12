@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, Image, View, useColorScheme } from "react-native";
 import { Card, Title, Text } from "react-native-paper";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // For star ratings
 import { Product } from "@/types/Product";
 import { Colors } from "@/constants/Colors";
 
@@ -9,14 +10,27 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-    const [open, setOpen] = useState<boolean>(false);
     const colorScheme = useColorScheme();
     const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
+    const renderStars = (rating: number) => {
+        return Array.from({ length: 5 }, (_, index) => (
+            <MaterialCommunityIcons
+                key={index}
+                name={index < rating ? "star" : "star-outline"} // Full or outlined star
+                size={16}
+                color={themeColors.icon}
+            />
+        ));
+    };
+
     return (
         <Card style={[styles.card, { backgroundColor: themeColors.cardbackground, shadowColor: themeColors.icon }]}>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => alert(`Zobacz szczegóły produktu: ${product.productName}`)} style={styles.row}>
-
+            <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => alert(`Zobacz szczegóły produktu: ${product.productName}`)}
+                style={styles.row}
+            >
                 {/* Product Image */}
                 <Image source={{ uri: product.image }} style={styles.image} />
 
@@ -25,14 +39,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     {/* Product Name */}
                     <Title
                         style={[styles.title, { color: themeColors.text }]}
-                        numberOfLines={2}              // Limit title to 2 lines
-                        ellipsizeMode="tail"           // Show ellipsis if text overflows
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
                     >
                         {product.productName}
                     </Title>
-                    
+
+                    {/* Star Rating */}
+                    <View style={styles.ratingContainer}>{renderStars(Math.round(product.rating))}</View>
+
                     {/* Product Description */}
-                    <Text style={[styles.description, { color: themeColors.text }]}>{product.description}</Text>
+                    <Text style={[styles.description, { color: themeColors.text }]} numberOfLines={2} ellipsizeMode="tail">
+                        {product.description}
+                    </Text>
 
                     {/* Price Section at the Bottom */}
                     <View style={styles.priceContainer}>
@@ -74,16 +93,19 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        justifyContent: 'space-between', // Space out title, description, and price
+        justifyContent: 'space-between',
     },
     title: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 4,
+    },
+    ratingContainer: {
+        flexDirection: 'row',
+        marginVertical: 4,
     },
     description: {
         fontSize: 14,
-        marginVertical: 8, // Adds space below the title and above the price
+        marginVertical: 8,
     },
     priceContainer: {
         flexDirection: 'row',

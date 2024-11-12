@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image, useColorScheme, ActivityIndicator, ScrollView } from "react-native";
+import { View, StyleSheet, Image, useColorScheme, ActivityIndicator, ScrollView, Alert } from "react-native";
 import { Text, Button, Divider } from "react-native-paper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { Product } from "@/types/Product"; // Assuming the Product type is defined
+import { Product } from "@/types/Product";
+import { useCart } from "@/context/CartContext";
 
 const ProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const colorScheme = useColorScheme() || 'light';
   const colors = Colors[colorScheme];
+  const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -37,42 +39,14 @@ const ProductScreen = () => {
     }
   }, [id]);
 
-  const [cartItems, setCartItems] = useState<string[]>([]);
-
-  const addToCart = () => {
+  const handleAddToCart = () => {
     if (product) {
-      setCartItems([...cartItems, product.productName]);
-      alert("Produkt dodany do koszyka!");
+      addToCart(product, 1); // Pass product and quantity
+      Alert.alert("Sukces", "Produkt dodany do koszyka!");
     }
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={colors.tint} />
-        <Text style={{ color: colors.text }}>Ładowanie produktu...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.notFoundContainer}>
-        <Text style={{ color: colors.text }}>{error}</Text>
-        <Button onPress={() => router.back()}>Powrót</Button>
-      </View>
-    );
-  }
-
-  if (!product) {
-    return (
-      <View style={styles.notFoundContainer}>
-        <Text style={{ color: colors.text }}>Produkt nie znaleziony</Text>
-        <Button onPress={() => router.back()}>Powrót</Button>
-      </View>
-    );
-  }
-
+  // Helper function to format the description
   const formatDescription = (description: string) => {
     // Replace all occurrences of literal '\r\n' with actual line breaks '\n'
     const sanitizedDescription = description.replace(/\\r\\n/g, '\n');
@@ -111,6 +85,33 @@ const ProductScreen = () => {
     });
   };
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={colors.tint} />
+        <Text style={{ color: colors.text }}>Ładowanie produktu...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.notFoundContainer}>
+        <Text style={{ color: colors.text }}>{error}</Text>
+        <Button onPress={() => router.back()}>Powrót</Button>
+      </View>
+    );
+  }
+
+  if (!product) {
+    return (
+      <View style={styles.notFoundContainer}>
+        <Text style={{ color: colors.text }}>Produkt nie znaleziony</Text>
+        <Button onPress={() => router.back()}>Powrót</Button>
+      </View>
+    );
+  }
+
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
       {/* Product Name */}
@@ -123,6 +124,10 @@ const ProductScreen = () => {
       {/* Product Price */}
       <Text style={[styles.price, { color: colors.text }]}>Cena: {product.price} zł</Text>
 
+      {/* Quantity Selector */}
+      {/* You can add a quantity selector here if you want to allow the user to choose quantity */}
+      {/* For simplicity, let's assume quantity is always 1 */}
+
       {/* Product Description */}
       <View style={styles.descriptionContainer}>
         {formatDescription(product.description)}
@@ -131,7 +136,7 @@ const ProductScreen = () => {
       {/* Add to Cart Button */}
       <Button
         mode="contained"
-        onPress={addToCart}
+        onPress={handleAddToCart} // Use handleAddToCart here
         style={[styles.addToCartButton, { backgroundColor: colors.tint }]}
         labelStyle={{ color: colors.background }}
       >

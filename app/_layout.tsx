@@ -11,7 +11,8 @@ import "react-native-reanimated";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { AuthProvider } from "@/context/AuthContext";
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+import { CartProvider } from "@/context/CartContext";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -32,16 +33,16 @@ export default function RootLayout() {
 
   return (
     <AuthProvider>
-      <GestureHandlerRootView>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ThemeProvider>
-      </GestureHandlerRootView>
+      <CartProvider>
+        <GestureHandlerRootView>
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </ThemeProvider>
+        </GestureHandlerRootView>
+      </CartProvider>
     </AuthProvider>
   );
 }
