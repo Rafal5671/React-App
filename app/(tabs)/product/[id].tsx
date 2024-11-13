@@ -18,6 +18,9 @@ const ProductScreen = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchProductData = async () => {
       try {
@@ -35,8 +38,26 @@ const ProductScreen = () => {
       }
     };
 
+    const fetchComments = async () => {
+          try {
+            const response = await fetch(`http://192.168.100.8:8082/api/comments/product/${id}`);
+
+            if (!response.ok) {
+              throw new Error("Failed to fetch comments");
+            }
+            const data = await response.json();
+            setComments(data);
+          } catch (error) {
+            console.error("Error fetching comments:", error);
+          } finally {
+            setCommentsLoading(false);
+          }
+        };
+
+
     if (id) {
       fetchProductData();
+      fetchComments();
     }
   }, [id]);
 
@@ -176,6 +197,25 @@ const ProductScreen = () => {
       <View style={styles.descriptionContainer}>
         {formatDescription(product.description)}
       </View>
+
+      {/* Comments Section */}
+       <Text style={[styles.sectionHeader, { color: colors.text }]}>Opinie:</Text>
+       {commentsLoading ? (
+         <ActivityIndicator size="small" color={colors.tint} />
+       ) : comments.length > 0 ? (
+         comments.map((comment) => (
+           <View key={comment.id} style={[styles.commentContainer, { backgroundColor: colors.cardbackground }]}>
+             <Text style={[styles.commentUser, { color: colors.text }]}>{comment.user.username}</Text>
+             <View style={styles.ratingContainer}>
+               {renderStars(comment.rating)}
+             </View>
+             <Text style={[styles.commentText, { color: colors.text }]}>{comment.description}</Text>
+           </View>
+         ))
+       ) : (
+         <Text style={{ color: colors.text }}>Brak opinii dla tego produktu.</Text>
+       )}
+
 
       {/* Add to Cart Button */}
       <Button
