@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Product } from "@/types/Product";
 import { useCart } from "@/context/CartContext";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -16,6 +17,9 @@ const ProductScreen = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsLoading, setCommentsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -34,8 +38,26 @@ const ProductScreen = () => {
       }
     };
 
+    const fetchComments = async () => {
+          try {
+            const response = await fetch(`http://192.168.100.8:8082/api/comments/product/${id}`);
+
+            if (!response.ok) {
+              throw new Error("Failed to fetch comments");
+            }
+            const data = await response.json();
+            setComments(data);
+          } catch (error) {
+            console.error("Error fetching comments:", error);
+          } finally {
+            setCommentsLoading(false);
+          }
+        };
+
+
     if (id) {
       fetchProductData();
+      fetchComments();
     }
   }, [id]);
 
@@ -44,6 +66,45 @@ const ProductScreen = () => {
       addToCart(product, 1); // Pass product and quantity
       Alert.alert("Sukces", "Produkt dodany do koszyka!");
     }
+  };
+
+  // Function to render stars based on rating with half-star support
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, index) => {
+      const starRating = index + 1;
+
+      if (rating >= starRating) {
+        // Full star
+        return (
+          <MaterialCommunityIcons
+            key={index}
+            name="star"
+            size={18}
+            color={colors.tint}
+          />
+        );
+      } if (rating >= starRating - 0.5) {
+        // Half star
+        return (
+          <MaterialCommunityIcons
+            key={index}
+            name="star-half-full"
+            size={18}
+            color={colors.tint}
+          />
+        );
+      } else {
+        // Empty star
+        return (
+          <MaterialCommunityIcons
+            key={index}
+            name="star-outline"
+            size={18}
+            color={colors.tint}
+          />
+        );
+      }
+    });
   };
 
   // Helper function to format the description
@@ -124,14 +185,37 @@ const ProductScreen = () => {
       {/* Product Price */}
       <Text style={[styles.price, { color: colors.text }]}>Cena: {product.price} zł</Text>
 
-      {/* Quantity Selector */}
-      {/* You can add a quantity selector here if you want to allow the user to choose quantity */}
-      {/* For simplicity, let's assume quantity is always 1 */}
+     {/* Rating and Comment Count */}
+      <View style={styles.ratingContainer}>
+        <View style={styles.starContainer}>{renderStars(product.rating)}</View>
+        <Text style={[styles.ratingText, { color: colors.text }]}>
+          {product.comments.length} ocen
+        </Text>
+      </View>
 
       {/* Product Description */}
       <View style={styles.descriptionContainer}>
         {formatDescription(product.description)}
       </View>
+
+      {/* Comments Section */}
+       <Text style={[styles.sectionHeader, { color: colors.text }]}>Opinie:</Text>
+       {commentsLoading ? (
+         <ActivityIndicator size="small" color={colors.tint} />
+       ) : comments.length > 0 ? (
+         comments.map((comment) => (
+           <View key={comment.id} style={[styles.commentContainer, { backgroundColor: colors.cardbackground }]}>
+             <Text style={[styles.commentUser, { color: colors.text }]}>{comment.user.username}</Text>
+             <View style={styles.ratingContainer}>
+               {renderStars(comment.rating)}
+             </View>
+             <Text style={[styles.commentText, { color: colors.text }]}>{comment.description}</Text>
+           </View>
+         ))
+       ) : (
+         <Text style={{ color: colors.text }}>Brak opinii dla tego produktu.</Text>
+       )}
+
 
       {/* Add to Cart Button */}
       <Button
@@ -167,6 +251,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
   },
+  ratingContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    starContainer: {
+      flexDirection: "row",
+      marginRight: 8,
+    },
+    ratingText: {
+      fontSize: 16,
+    },
   descriptionContainer: {
     marginBottom: 24,
   },
