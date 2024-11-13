@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Product } from "@/types/Product";
 import { useCart } from "@/context/CartContext";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const ProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -44,6 +45,45 @@ const ProductScreen = () => {
       addToCart(product, 1); // Pass product and quantity
       Alert.alert("Sukces", "Produkt dodany do koszyka!");
     }
+  };
+
+  // Function to render stars based on rating with half-star support
+  const renderStars = (rating: number) => {
+    return Array.from({ length: 5 }, (_, index) => {
+      const starRating = index + 1;
+
+      if (rating >= starRating) {
+        // Full star
+        return (
+          <MaterialCommunityIcons
+            key={index}
+            name="star"
+            size={18}
+            color={colors.tint}
+          />
+        );
+      } if (rating >= starRating - 0.5) {
+        // Half star
+        return (
+          <MaterialCommunityIcons
+            key={index}
+            name="star-half-full"
+            size={18}
+            color={colors.tint}
+          />
+        );
+      } else {
+        // Empty star
+        return (
+          <MaterialCommunityIcons
+            key={index}
+            name="star-outline"
+            size={18}
+            color={colors.tint}
+          />
+        );
+      }
+    });
   };
 
   // Helper function to format the description
@@ -124,9 +164,13 @@ const ProductScreen = () => {
       {/* Product Price */}
       <Text style={[styles.price, { color: colors.text }]}>Cena: {product.price} zł</Text>
 
-      {/* Quantity Selector */}
-      {/* You can add a quantity selector here if you want to allow the user to choose quantity */}
-      {/* For simplicity, let's assume quantity is always 1 */}
+     {/* Rating and Comment Count */}
+      <View style={styles.ratingContainer}>
+        <View style={styles.starContainer}>{renderStars(product.rating)}</View>
+        <Text style={[styles.ratingText, { color: colors.text }]}>
+          {product.comments.length} ocen
+        </Text>
+      </View>
 
       {/* Product Description */}
       <View style={styles.descriptionContainer}>
@@ -167,6 +211,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 16,
   },
+  ratingContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 16,
+    },
+    starContainer: {
+      flexDirection: "row",
+      marginRight: 8,
+    },
+    ratingText: {
+      fontSize: 16,
+    },
   descriptionContainer: {
     marginBottom: 24,
   },

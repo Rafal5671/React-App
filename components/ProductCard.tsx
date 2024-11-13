@@ -1,124 +1,123 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, TouchableOpacity, Image, View, useColorScheme } from "react-native";
-import { Card, Title, Text } from "react-native-paper";
+import { Card, Title, Text, Paragraph } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons"; // For star ratings
 import { Product } from "@/types/Product";
 import { Colors } from "@/constants/Colors";
+import { useRouter } from "expo-router";
 
 interface ProductCardProps {
     product: Product;
+    colorScheme: 'light' | 'dark';
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-    const colorScheme = useColorScheme();
-    const themeColors = colorScheme === 'dark' ? Colors.dark : Colors.light;
+const ProductCard: React.FC<ProductCardProps> = ({ product, colorScheme }) => {
+    const colors = Colors[colorScheme];
+    const router = useRouter();
 
+    const handleProductClick = () => {
+        router.push(`/product/${product.id}`);
+    };
+
+    // Function to render stars based on rating with half-star support
     const renderStars = (rating: number) => {
-        return Array.from({ length: 5 }, (_, index) => (
-            <MaterialCommunityIcons
-                key={index}
-                name={index < rating ? "star" : "star-outline"} // Full or outlined star
-                size={16}
-                color={themeColors.icon}
-            />
-        ));
+        return Array.from({ length: 5 }, (_, index) => {
+            const starRating = index + 1;
+
+            if (rating >= starRating) {
+                // Full star
+                return (
+                    <MaterialCommunityIcons
+                        key={index}
+                        name="star"
+                        size={16}
+                        color={colors.tint}
+                    />
+                );
+            } else if (rating >= starRating - 0.5) {
+                // Half star
+                return (
+                    <MaterialCommunityIcons
+                        key={index}
+                        name="star-half-full"
+                        size={16}
+                        color={colors.tint}
+                    />
+                );
+            } else {
+                // Empty star
+                return (
+                    <MaterialCommunityIcons
+                        key={index}
+                        name="star-outline"
+                        size={16}
+                        color={colors.tint}
+                    />
+                );
+            }
+        });
     };
 
     return (
-        <Card style={[styles.card, { backgroundColor: themeColors.cardbackground, shadowColor: themeColors.icon }]}>
-            <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => alert(`Zobacz szczegóły produktu: ${product.productName}`)}
-                style={styles.row}
-            >
-                {/* Product Image */}
-                <Image source={{ uri: product.image }} style={styles.image} />
-
-                {/* Product Details */}
-                <Card.Content style={styles.content}>
-                    {/* Product Name */}
+        <TouchableOpacity onPress={handleProductClick}>
+            <Card style={[styles.productCard, { backgroundColor: colors.cardbackground }]}>
+                <Image source={{ uri: product.image }} style={styles.productImage} />
+                <Card.Content>
                     <Title
-                        style={[styles.title, { color: themeColors.text }]}
+                        style={{ color: colors.text }}
                         numberOfLines={2}
                         ellipsizeMode="tail"
                     >
                         {product.productName}
                     </Title>
 
-                    {/* Star Rating */}
-                    <View style={styles.ratingContainer}>{renderStars(Math.round(product.rating))}</View>
-
-                    {/* Product Description */}
-                    <Text style={[styles.description, { color: themeColors.text }]} numberOfLines={2} ellipsizeMode="tail">
-                        {product.description}
-                    </Text>
-
-                    {/* Price Section at the Bottom */}
-                    <View style={styles.priceContainer}>
-                        {product.cutPrice && (
-                            <Text style={[styles.cutPrice, { color: themeColors.icon }]}>{product.cutPrice} zł</Text>
-                        )}
-                        <Text style={[styles.price, { color: themeColors.text }]}>{product.price} zł</Text>
+                    {/* Star Rating and Review Count */}
+                    <View style={styles.ratingContainer}>
+                        <View style={styles.starContainer}>{renderStars(product.rating)}</View>
+                        <Text style={[styles.ratingText, { color: colors.text }]}>
+                            ({product.comments?.length ?? 0} ocen)
+                        </Text>
                     </View>
+
+                    <Paragraph style={{ color: colors.text }}>{product.price} zł</Paragraph>
+                    {product.cutPrice && (
+                        <Paragraph style={[styles.cutPrice, { color: colors.icon }]}>
+                            {product.cutPrice} zł
+                        </Paragraph>
+                    )}
                 </Card.Content>
-            </TouchableOpacity>
-        </Card>
+            </Card>
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
-    card: {
-        marginVertical: 8,
-        width: '100%',
-        height: 180,
-        borderRadius: 10,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+    productCard: {
+        width: 300,
+        height: 370,
+        marginRight: 12,
+        borderRadius: 8,
+        marginBottom: 16, // Add some margin at the bottom
     },
-    row: {
-        flexDirection: 'row',
-        height: '100%',
-    },
-    image: {
-        width: 125,
-        height: '100%',
-        resizeMode: "cover",
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        marginRight: 10,
-    },
-    content: {
-        flex: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        justifyContent: 'space-between',
-    },
-    title: {
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    ratingContainer: {
-        flexDirection: 'row',
-        marginVertical: 4,
-    },
-    description: {
-        fontSize: 14,
-        marginVertical: 8,
-    },
-    priceContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    productImage: {
+        width: 300,
+        height: 250,
+        borderRadius: 8,
     },
     cutPrice: {
         textDecorationLine: 'line-through',
-        fontSize: 14,
-        marginRight: 8,
     },
-    price: {
-        fontSize: 18,
-        fontWeight: 'bold',
+    ratingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 4,
+    },
+    starContainer: {
+        flexDirection: 'row',
+    },
+    ratingText: {
+        fontSize: 14,
+        marginLeft: 4,
     },
 });
 
