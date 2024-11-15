@@ -1,37 +1,29 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, Alert } from "react-native";
+import React from "react";
+import { View, StyleSheet, useColorScheme, Alert, TouchableOpacity, Text } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import ProfileZone from "@/components/ProfileZone";
 import Login from "@/components/Login";
-
-interface User {
-  name: string;
-  lastName: string;
-  // Add any other user properties you might have
-}
+import { useAuth } from "@/context/AuthContext"; // Import useAuth
 
 const ProfileScreen: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null); // State to store user details
+  const { isLoggedIn, user, login, logout } = useAuth(); // Use AuthContext
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
 
   const handleLoginSuccess = (userData: User) => {
-    setIsLoggedIn(true);
-    setUser(userData); // Set user details in state
+    login(userData); // Use login from AuthContext
   };
 
   const handleLogout = async () => {
     try {
       await fetch("http://192.168.100.8:8082/api/logout", {
         method: "GET",
-        credentials: "include", // Send cookies with the request if needed
+        credentials: "include",
       });
-      setIsLoggedIn(false);
-      setUser(null);
+      logout(); // Use logout from AuthContext
       Alert.alert("Success", "Logged out successfully!");
     } catch (error) {
       console.error("Logout error:", error);
