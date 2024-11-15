@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, Image, useColorScheme } from 'react-native';
-import { Text, Button, IconButton, Divider } from 'react-native-paper';
+import { Text, IconButton, Divider, Button } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useCart } from '@/context/CartContext';
@@ -9,7 +9,7 @@ const FullCart: React.FC = () => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
 
   const totalAmount = cartItems
     .reduce((total, item) => total + item.price * item.quantity, 0)
@@ -26,7 +26,24 @@ const FullCart: React.FC = () => {
             <Image source={{ uri: item.image }} style={styles.productImage} />
             <View style={styles.productDetails}>
               <Text style={[styles.productName, { color: colors.text }]}>{item.productName}</Text>
-              <Text style={[styles.productPrice, { color: colors.text }]}>{item.price} zł x {item.quantity}</Text>
+              <Text style={[styles.productPrice, { color: colors.text }]}>
+                {item.price} zł x {item.quantity}
+              </Text>
+              <View style={styles.quantityContainer}>
+                <IconButton
+                  icon="minus-circle-outline"
+                  iconColor={colors.tint}
+                  size={24}
+                  onPress={() => updateQuantity(item.id, item.quantity - 1)}
+                />
+                <Text style={[styles.quantityText, { color: colors.text }]}>{item.quantity}</Text>
+                <IconButton
+                  icon="plus-circle-outline"
+                  iconColor={colors.tint}
+                  size={24}
+                  onPress={() => updateQuantity(item.id, item.quantity + 1)}
+                />
+              </View>
             </View>
             <IconButton
               icon="trash-can-outline"
@@ -68,7 +85,7 @@ const styles = StyleSheet.create({
   },
   cartItem: {
     flexDirection: 'row',
-    padding: 22,
+    padding: 16,
     alignItems: 'center',
     minHeight: 100,
     position: 'relative',
@@ -89,6 +106,14 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 16,
     marginVertical: 4,
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  quantityText: {
+    fontSize: 16,
+    marginHorizontal: 8,
   },
   deleteButton: {
     position: 'absolute',
