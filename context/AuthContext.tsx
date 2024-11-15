@@ -1,21 +1,45 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
+interface User {
+  name: string;
+  lastName: string;
+  email: string;
+}
+
 interface AuthContextType {
   isLoggedIn: boolean;
-  login: () => void;
+  user: User | null;
+  basketId: number | null;
+  login: (userData: User, basketId: number) => void;
   logout: () => void;
+  updateBasketId: (newBasketId: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [basketId, setBasketId] = useState<number | null>(null);
 
-  const login = () => setIsLoggedIn(true);
-  const logout = () => setIsLoggedIn(false);
+  const login = (userData: User, basketId: number) => {
+    setIsLoggedIn(true);
+    setUser(userData);
+    setBasketId(basketId);
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    setUser(null);
+    setBasketId(null);
+  };
+
+  const updateBasketId = (newBasketId: number) => {
+    setBasketId(newBasketId);
+  };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, basketId, login, logout, updateBasketId }}>
       {children}
     </AuthContext.Provider>
   );

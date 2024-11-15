@@ -1,43 +1,33 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, TextInput, Alert } from "react-native";
+import { useAuth } from "@/context/AuthContext";
 import { Colors } from "@/constants/Colors";
 
-interface User {
-  name: string;
-  lastName: string;
-  // Add any other user properties you might have
-}
-
-
-interface LoginProps {
-  onLoginSuccess: (userData: User) => void;  // Callback function to handle successful login
-}
-
-const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === "dark";
+  const isDarkMode = colorScheme === 'dark';
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     try {
       const response = await fetch("http://192.168.100.8:8082/api/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email, password }),
-          });
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
 
       if (response.ok) {
-        // If login is successful, pass the user data to the callback
         Alert.alert("Success", "Login successful!");
-        onLoginSuccess(data.user); // Pass user data here
+        const { user, basketId } = data;
+        login(user, basketId); // Pass both user and basketId
       } else {
-        // If login fails, show an error message
         Alert.alert("Error", data.message || "Invalid email or password");
       }
     } catch (error) {

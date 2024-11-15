@@ -193,6 +193,16 @@ const ProductScreen = () => {
         </Text>
       </View>
 
+       {/* Add to Cart Button */}
+      <Button
+        mode="contained"
+        onPress={handleAddToCart} // Use handleAddToCart here
+        style={[styles.addToCartButton, { backgroundColor: colors.tint }]}
+        labelStyle={{ color: colors.background }}
+      >
+        Dodaj do koszyka
+      </Button>
+
       {/* Product Description */}
       <View style={styles.descriptionContainer}>
         {formatDescription(product.description)}
@@ -217,15 +227,7 @@ const ProductScreen = () => {
        )}
 
 
-      {/* Add to Cart Button */}
-      <Button
-        mode="contained"
-        onPress={handleAddToCart} // Use handleAddToCart here
-        style={[styles.addToCartButton, { backgroundColor: colors.tint }]}
-        labelStyle={{ color: colors.background }}
-      >
-        Dodaj do koszyka
-      </Button>
+
     </ScrollView>
   );
 };
