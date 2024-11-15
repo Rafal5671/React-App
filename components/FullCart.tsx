@@ -1,19 +1,33 @@
 import React from 'react';
-import { View, StyleSheet, FlatList, Image, useColorScheme } from 'react-native';
+import { View, StyleSheet, FlatList, Image, useColorScheme, Alert } from 'react-native';
 import { Text, IconButton, Divider, Button } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 
 const FullCart: React.FC = () => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart } = useCart();
+  const { isLoggedIn } = useAuth();
 
   const totalAmount = cartItems
     .reduce((total, item) => total + item.price * item.quantity, 0)
     .toFixed(2);
+
+  const handleCheckout = () => {
+    if (!isLoggedIn) {
+      Alert.alert(
+        "Musisz być zalogowany",
+        "Zaloguj się, aby kontynuować do kasy.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    router.push('/delivery');
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -29,21 +43,6 @@ const FullCart: React.FC = () => {
               <Text style={[styles.productPrice, { color: colors.text }]}>
                 {item.price} zł x {item.quantity}
               </Text>
-              <View style={styles.quantityContainer}>
-                <IconButton
-                  icon="minus-circle-outline"
-                  iconColor={colors.tint}
-                  size={24}
-                  onPress={() => updateQuantity(item.id, item.quantity - 1)}
-                />
-                <Text style={[styles.quantityText, { color: colors.text }]}>{item.quantity}</Text>
-                <IconButton
-                  icon="plus-circle-outline"
-                  iconColor={colors.tint}
-                  size={24}
-                  onPress={() => updateQuantity(item.id, item.quantity + 1)}
-                />
-              </View>
             </View>
             <IconButton
               icon="trash-can-outline"
@@ -62,7 +61,7 @@ const FullCart: React.FC = () => {
       </View>
       <Button
         mode="contained"
-        onPress={() => router.push('/delivery')}
+        onPress={handleCheckout} // Check login before proceeding
         style={[styles.checkoutButton, { backgroundColor: colors.tint }]}
         labelStyle={{ color: colors.background }}
       >
@@ -71,6 +70,7 @@ const FullCart: React.FC = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
