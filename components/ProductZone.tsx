@@ -13,7 +13,7 @@ const ProductZone: React.FC = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch("http://192.168.100.8:8082/api/products");
+                const response = await fetch("http://192.168.1.100:8082/api/products");
                 if (!response.ok) {
                     throw new Error("Failed to fetch products");
                 }

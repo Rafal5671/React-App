@@ -22,7 +22,7 @@ const CartScreen: React.FC = () => {
     loadCart();
   }, []);
 
-  const handleRemoveFromCart = (productId: string) => {
+  const handleRemoveFromCart = (productId: number) => {
     setCartItems((prevItems) => {
       const updatedItems = prevItems.filter((item) => item.id !== productId);
       AsyncStorage.setItem('cart', JSON.stringify(updatedItems)); // Save the updated cart back to AsyncStorage

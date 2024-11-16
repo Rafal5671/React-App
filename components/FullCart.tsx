@@ -3,16 +3,21 @@ import { View, StyleSheet, FlatList, Image, useColorScheme, Alert } from 'react-
 import { Text, IconButton, Divider, Button } from 'react-native-paper';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
-import { useCart } from '@/context/CartContext';
+import { Product } from '@/types/Product';
 import { useAuth } from '@/context/AuthContext';
 
-const FullCart: React.FC = () => {
+interface FullCartProps {
+  cartItems: Product[];
+  removeFromCart: (productId: number) => void;
+}
+
+const FullCart: React.FC<FullCartProps> = ({ cartItems, removeFromCart }) => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  const { cartItems, removeFromCart } = useCart();
   const { isLoggedIn } = useAuth();
-
+  console.log(cartItems);
+  // Oblicz łączną kwotę
   const totalAmount = cartItems
     .reduce((total, item) => total + item.price * item.quantity, 0)
     .toFixed(2);
@@ -39,7 +44,9 @@ const FullCart: React.FC = () => {
           <View style={[styles.cartItem, { backgroundColor: colors.background }]}>
             <Image source={{ uri: item.image }} style={styles.productImage} />
             <View style={styles.productDetails}>
-              <Text style={[styles.productName, { color: colors.text }]}>{item.productName}</Text>
+              <Text style={[styles.productName, { color: colors.text }]}>
+                {item.productName}
+              </Text>
               <Text style={[styles.productPrice, { color: colors.text }]}>
                 {item.price} zł x {item.quantity}
               </Text>
@@ -61,7 +68,7 @@ const FullCart: React.FC = () => {
       </View>
       <Button
         mode="contained"
-        onPress={handleCheckout} // Check login before proceeding
+        onPress={handleCheckout}
         style={[styles.checkoutButton, { backgroundColor: colors.tint }]}
         labelStyle={{ color: colors.background }}
       >
@@ -70,7 +77,6 @@ const FullCart: React.FC = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -106,14 +112,6 @@ const styles = StyleSheet.create({
   productPrice: {
     fontSize: 16,
     marginVertical: 4,
-  },
-  quantityContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  quantityText: {
-    fontSize: 16,
-    marginHorizontal: 8,
   },
   deleteButton: {
     position: 'absolute',

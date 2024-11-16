@@ -47,7 +47,7 @@ const DeliveryScreen: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://192.168.100.8:8082/api/order", {
+      const response = await fetch("http://192.168.1.100:8082/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderDetails)
