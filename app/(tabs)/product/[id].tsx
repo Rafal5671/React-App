@@ -24,7 +24,7 @@ const ProductScreen = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://192.168.100.8:8082/api/products/${id}`);
+        const response = await fetch(`http://192.168.100.9:8082/api/products/${id}`);
         if (!response.ok) {
           throw new Error("Product not found");
         }
@@ -40,7 +40,7 @@ const ProductScreen = () => {
 
     const fetchComments = async () => {
           try {
-            const response = await fetch(`http://192.168.100.8:8082/api/comments/product/${id}`);
+            const response = await fetch(`http://192.168.100.9:8082/api/comments/product/${id}`);
 
             if (!response.ok) {
               throw new Error("Failed to fetch comments");

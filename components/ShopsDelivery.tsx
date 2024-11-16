@@ -20,7 +20,7 @@ const ShopsDelivery: React.FC = () => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch('http://192.168.100.8:8082/api/shop'); // Replace with your backend IP if needed
+        const response = await fetch('http://192.168.100.9:8082/api/shop'); // Replace with your backend IP if needed
         const data = await response.json();
         setStores(data);
       } catch (error) {

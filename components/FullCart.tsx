@@ -43,6 +43,21 @@ const FullCart: React.FC = () => {
               <Text style={[styles.productPrice, { color: colors.text }]}>
                 {item.price} zł x {item.quantity}
               </Text>
+              <View style={styles.quantityContainer}>
+                <IconButton
+                  icon="minus-circle-outline"
+                  iconColor={colors.tint}
+                  size={24}
+                  onPress={() => updateQuantity(item.id, item.quantity - 1)}
+                />
+                <Text style={[styles.quantityText, { color: colors.text }]}>{item.quantity}</Text>
+                <IconButton
+                  icon="plus-circle-outline"
+                  iconColor={colors.tint}
+                  size={24}
+                  onPress={() => updateQuantity(item.id, item.quantity + 1)}
+                />
+              </View>
             </View>
             <IconButton
               icon="trash-can-outline"
@@ -61,7 +76,7 @@ const FullCart: React.FC = () => {
       </View>
       <Button
         mode="contained"
-        onPress={handleCheckout} // Check login before proceeding
+        onPress={handleCheckout}
         style={[styles.checkoutButton, { backgroundColor: colors.tint }]}
         labelStyle={{ color: colors.background }}
       >
@@ -70,7 +85,6 @@ const FullCart: React.FC = () => {
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
