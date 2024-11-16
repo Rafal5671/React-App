@@ -10,7 +10,7 @@ const FullCart: React.FC = () => {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = colorScheme === 'dark' ? Colors.dark : Colors.light;
-  const { cartItems, removeFromCart } = useCart();
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
   const { isLoggedIn } = useAuth();
 
   const totalAmount = cartItems
