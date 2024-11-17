@@ -1,59 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Image, useColorScheme, ActivityIndicator, ScrollView, Alert } from "react-native";
+import {
+  View,
+  Image,
+  useColorScheme,
+  ActivityIndicator,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { Text, Button, Divider } from "react-native-paper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
 import { Product } from "@/types/Product";
 import { useCart } from "@/context/CartContext";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const ProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const colorScheme = useColorScheme() || 'light';
+  const colorScheme = useColorScheme() || "light";
   const colors = Colors[colorScheme];
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsLoading, setCommentsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://192.168.100.9:8082/api/products/${id}`);
-        if (!response.ok) {
-          throw new Error("Product not found");
-        }
+        const response = await fetch(`http://192.168.1.100:8082/api/products/${id}`);
+        if (!response.ok) throw new Error("Product not found");
         const data = await response.json();
         setProduct(data);
       } catch (error) {
         setError("Failed to load product details. Please try again.");
-        console.error("Error fetching product data:", error);
       } finally {
         setLoading(false);
       }
     };
 
     const fetchComments = async () => {
-          try {
-            const response = await fetch(`http://192.168.100.9:8082/api/comments/product/${id}`);
-
-            if (!response.ok) {
-              throw new Error("Failed to fetch comments");
-            }
-            const data = await response.json();
-            setComments(data);
-          } catch (error) {
-            console.error("Error fetching comments:", error);
-          } finally {
-            setCommentsLoading(false);
-          }
-        };
-
+      try {
+        const response = await fetch(`http://192.168.1.100:8082/api/comments/product/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch comments");
+        const data = await response.json();
+        setComments(data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      } finally {
+        setCommentsLoading(false);
+      }
+    };
 
     if (id) {
       fetchProductData();
@@ -63,92 +62,87 @@ const ProductScreen = () => {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product, 1); // Pass product and quantity
+      addToCart(product, 1);
       Alert.alert("Sukces", "Produkt dodany do koszyka!");
     }
   };
 
-  // Function to render stars based on rating with half-star support
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => {
       const starRating = index + 1;
-
+      const starColor = "#FFD700"; // Złoty kolor
+  
       if (rating >= starRating) {
-        // Full star
         return (
           <MaterialCommunityIcons
             key={index}
             name="star"
-            size={18}
-            color={colors.tint}
+            size={24} // Zwiększony rozmiar gwiazdki
+            color={starColor}
           />
         );
-      } if (rating >= starRating - 0.5) {
-        // Half star
+      }
+      if (rating >= starRating - 0.5) {
         return (
           <MaterialCommunityIcons
             key={index}
             name="star-half-full"
-            size={18}
-            color={colors.tint}
-          />
-        );
-      } else {
-        // Empty star
-        return (
-          <MaterialCommunityIcons
-            key={index}
-            name="star-outline"
-            size={18}
-            color={colors.tint}
+            size={24} // Zwiększony rozmiar gwiazdki
+            color={starColor}
           />
         );
       }
+      return (
+        <MaterialCommunityIcons
+          key={index}
+          name="star-outline"
+          size={24} // Zwiększony rozmiar gwiazdki
+          color={starColor}
+        />
+      );
     });
   };
+  
 
-  // Helper function to format the description
   const formatDescription = (description: string) => {
-    // Replace all occurrences of literal '\r\n' with actual line breaks '\n'
-    const sanitizedDescription = description.replace(/\\r\\n/g, '\n');
-
-    // Split the description into segments separated by '\n'
-    const segments = sanitizedDescription.split('\n');
-
-    // Map over each segment
-    return segments.map((segment, index) => {
-      // Trim the segment to remove any leading/trailing whitespace
-      const trimmedSegment = segment.trim();
-
-      // Check if the segment contains a ':'
-      const colonIndex = trimmedSegment.indexOf(':');
+    // Zastępujemy "\r\n" i "\n" na pojedynczy znak nowej linii
+    const cleanedDescription = description.replace(/\\r\\n|\\n/g, "\n");
+  
+    // Podziel tekst na poszczególne linie
+    const lines = cleanedDescription.split("\n");
+  
+    // Mapowanie każdej linii na bardziej czytelny format
+    return lines.map((line, index) => {
+      const trimmedLine = line.trim();
+  
+      // Sprawdzenie, czy linia zawiera dwukropek
+      const colonIndex = trimmedLine.indexOf(":");
       if (colonIndex !== -1) {
-        // Split into before and after colon
-        const beforeColon = trimmedSegment.substring(0, colonIndex + 1); // Include ':'
-        const afterColon = trimmedSegment.substring(colonIndex + 1).trim();
-
+        const beforeColon = trimmedLine.substring(0, colonIndex + 1);
+        const afterColon = trimmedLine.substring(colonIndex + 1).trim();
+  
         return (
-          <Text key={index} style={[styles.description, { color: colors.text }]}>
-            <Text>{beforeColon} </Text>
-            <Text style={styles.boldText}>{afterColon}</Text>
-            {'\n'}
-          </Text>
-        );
-      } else {
-        // No colon, render the segment as is
-        return (
-          <Text key={index} style={[styles.description, { color: colors.text }]}>
-            {trimmedSegment}
-            {'\n'}
-          </Text>
+          <View key={index} style={{ flexDirection: "row", marginBottom: 8 }}>
+            <Text style={{ fontWeight: "bold", color: "#000" }}>{beforeColon} </Text>
+            <Text style={{ color: "#666" }}>{afterColon}</Text>
+          </View>
         );
       }
+  
+      // Jeśli brak dwukropka, zwróć linię jako zwykły tekst
+      return (
+        <Text key={index} style={{ marginBottom: 8, color: "#666" }}>
+          {trimmedLine}
+        </Text>
+      );
     });
   };
+  
+  
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
         <ActivityIndicator size="large" color={colors.tint} />
         <Text style={{ color: colors.text }}>Ładowanie produktu...</Text>
       </View>
@@ -157,7 +151,7 @@ const ProductScreen = () => {
 
   if (error) {
     return (
-      <View style={styles.notFoundContainer}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
         <Text style={{ color: colors.text }}>{error}</Text>
         <Button onPress={() => router.back()}>Powrót</Button>
       </View>
@@ -166,7 +160,7 @@ const ProductScreen = () => {
 
   if (!product) {
     return (
-      <View style={styles.notFoundContainer}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
         <Text style={{ color: colors.text }}>Produkt nie znaleziony</Text>
         <Button onPress={() => router.back()}>Powrót</Button>
       </View>
@@ -174,122 +168,56 @@ const ProductScreen = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Product Name */}
-      <Text style={[styles.header, { color: colors.text }]}>{product.productName}</Text>
-      <Divider />
+    <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: 20 }}>
+       <Image
+    source={{ uri: product.image }}
+    style={{ width: "100%", height: 300, borderRadius: 8, marginBottom: 16 }}
+    resizeMode="contain"
+  />
 
-      {/* Product Image */}
-      <Image source={{ uri: product.image }} style={styles.productImage} />
+  {/* Nazwa produktu */}
+  <Text style={{ fontSize: 24, fontWeight: "bold", color: colors.text, marginBottom: 8 }}>
+    {product.productName}
+  </Text>
 
-      {/* Product Price */}
-      <Text style={[styles.price, { color: colors.text }]}>Cena: {product.price} zł</Text>
+  {/* Gwiazdki */}
+  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+    <View style={{ flexDirection: "row", marginRight: 8 }}>{renderStars(product.rating)}</View>
+    <Text style={{ fontSize: 16, color: colors.text }}>{product.comments.length} ocen</Text>
+  </View>
 
-     {/* Rating and Comment Count */}
-      <View style={styles.ratingContainer}>
-        <View style={styles.starContainer}>{renderStars(product.rating)}</View>
-        <Text style={[styles.ratingText, { color: colors.text }]}>
-          {product.comments.length} ocen
-        </Text>
-      </View>
-
-       {/* Add to Cart Button */}
+  {/* Cena */}
+  <Text style={{ fontSize: 20, fontWeight: "bold", color: colors.text, marginBottom: 16 }}>
+    Cena: {product.price} zł
+  </Text>
       <Button
         mode="contained"
-        onPress={handleAddToCart} // Use handleAddToCart here
-        style={[styles.addToCartButton, { backgroundColor: colors.tint }]}
-        labelStyle={{ color: colors.background }}
+        onPress={handleAddToCart}
+        style={{ marginBottom: 16, backgroundColor: colors.tint }}
+        labelStyle={{ color: colors.background, fontWeight: "bold" }}
+        icon="cart"
       >
         Dodaj do koszyka
       </Button>
 
-      {/* Product Description */}
-      <View style={styles.descriptionContainer}>
-        {formatDescription(product.description)}
-      </View>
+      <View style={{ marginBottom: 24 }}>{formatDescription(product.description)}</View>
 
-      {/* Comments Section */}
-       <Text style={[styles.sectionHeader, { color: colors.text }]}>Opinie:</Text>
-       {commentsLoading ? (
-         <ActivityIndicator size="small" color={colors.tint} />
-       ) : comments.length > 0 ? (
-         comments.map((comment) => (
-           <View key={comment.id} style={[styles.commentContainer, { backgroundColor: colors.cardbackground }]}>
-             <Text style={[styles.commentUser, { color: colors.text }]}>{comment.user.username}</Text>
-             <View style={styles.ratingContainer}>
-               {renderStars(comment.rating)}
-             </View>
-             <Text style={[styles.commentText, { color: colors.text }]}>{comment.description}</Text>
-           </View>
-         ))
-       ) : (
-         <Text style={{ color: colors.text }}>Brak opinii dla tego produktu.</Text>
-       )}
-
-
-
+      <Text style={{ fontSize: 18, fontWeight: "bold", color: colors.text, marginBottom: 16 }}>Opinie:</Text>
+      {commentsLoading ? (
+        <ActivityIndicator size="small" color={colors.tint} />
+      ) : comments.length > 0 ? (
+        comments.map((comment) => (
+          <View key={comment.id} style={{ marginBottom: 16, padding: 12, borderRadius: 8, backgroundColor: colors.cardbackground }}>
+            <Text style={{ color: colors.text, fontWeight: "bold" }}>{comment.user.username}</Text>
+            <View style={{ flexDirection: "row", marginVertical: 8 }}>{renderStars(comment.rating)}</View>
+            <Text style={{ color: colors.text }}>{comment.description}</Text>
+          </View>
+        ))
+      ) : (
+        <Text style={{ color: colors.text }}>Brak opinii dla tego produktu.</Text>
+      )}
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    paddingBottom: 40, // Add extra padding at the bottom for comfortable scrolling
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  productImage: {
-    width: "100%",
-    height: 300,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  price: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  ratingContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 16,
-    },
-    starContainer: {
-      flexDirection: "row",
-      marginRight: 8,
-    },
-    ratingText: {
-      fontSize: 16,
-    },
-  descriptionContainer: {
-    marginBottom: 24,
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  boldText: {
-    fontWeight: "bold",
-  },
-  addToCartButton: {
-    paddingVertical: 10,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  notFoundContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default ProductScreen;

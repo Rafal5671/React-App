@@ -13,7 +13,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.100.9:8082/api/login", {
+      const response = await fetch("http://192.168.1.100:8082/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
