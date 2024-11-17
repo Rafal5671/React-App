@@ -47,7 +47,7 @@ const DeliveryScreen: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://192.168.100.9:8082/api/order", {
+      const response = await fetch("http://192.168.1.100:8082/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderDetails)
@@ -63,7 +63,7 @@ const DeliveryScreen: React.FC = () => {
       clearCart();
 
       // Fetch the new basket ID
-      const basketResponse = await fetch(`http://192.168.100.9:8082/api/basket/user/${user.id}`);
+      const basketResponse = await fetch(`http://192.168.1.100:8082/api/basket/user/${user.id}`);
       const newBasket = await basketResponse.json();
 
       if (newBasket && newBasket.id) {

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, ScrollView, useColorScheme, TouchableOpacity } from "react-native";
-import { Avatar, List, Divider, Text } from "react-native-paper";
+import { Avatar, List, Divider, Text, Button } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 
 interface User {
@@ -13,13 +13,49 @@ interface ProfileZoneProps {
   user: User | null;
   onLogout: () => void;
 }
-
+interface Order {
+  id: string;
+  date: string;
+  status: string;
+  totalPrice: string;
+}
+const orders: Order[] = [
+  { id: "12345", date: "2024-11-10", status: "W trakcie", totalPrice: "299.99 zł" },
+  { id: "67890", date: "2024-10-22", status: "Zrealizowane", totalPrice: "149.99 zł" },
+  { id: "54321", date: "2024-09-15", status: "Anulowane", totalPrice: "79.00 zł" },
+];
 const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
   const colorScheme = useColorScheme();
   const colors = colorScheme === "dark" ? Colors.dark : Colors.light;
-
+  const [showOrders, setShowOrders] = useState(false);
+  
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
+       {showOrders ? (
+        // Widok zamówień
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Twoje zamówienia</Text>
+          {orders.map((order) => (
+            <View key={order.id}>
+              <List.Item
+                title={`Zamówienie #${order.id}`}
+                description={`Data: ${order.date} | Status: ${order.status}`}
+                titleStyle={{ color: colors.text }}
+                descriptionStyle={{ color: colors.icon }}
+                left={() => <List.Icon icon="package" color={colors.icon} />}
+                right={() => (
+                  <View style={styles.priceBadge}>
+                    <Text style={styles.priceText}>{order.totalPrice}</Text>
+                  </View>
+                )}
+              />
+              <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
+            </View>
+          ))}
+        </View>
+      ) : (
+        // Widok profilu
+        <>
       <View style={[styles.profileSection, { backgroundColor: colors.background }]}>
         <Avatar.Text
           size={64}
@@ -38,7 +74,7 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
 
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>Zakupy</Text>
-        <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
+        <TouchableOpacity activeOpacity={0.8} onPress={() => {setShowOrders(true)}}>
           <List.Item
             title="Zamówienia"
             titleStyle={{ color: colors.text }}
@@ -123,7 +159,10 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
       </TouchableOpacity>
 
       <Text style={[styles.version, { color: colors.icon }]}>Wersja 1.0.0</Text>
+      </>
+       )}
     </ScrollView>
+    
   );
 };
 
@@ -185,6 +224,24 @@ const styles = StyleSheet.create({
   version: {
     textAlign: "center",
     marginVertical: 10,
+  },
+  priceBadge: {
+    backgroundColor: "#0a7ea4",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  priceText: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  backButton: {
+    alignSelf: "flex-start",
+    marginLeft: 16,
+    marginBottom: 20,
   },
 });
 
