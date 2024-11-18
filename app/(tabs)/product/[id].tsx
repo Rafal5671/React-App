@@ -30,7 +30,7 @@ const ProductScreen = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://192.168.1.100:8082/api/products/${id}`);
+        const response = await fetch(`http://192.168.100.8:8082/api/products/${id}`);
         if (!response.ok) throw new Error("Product not found");
         const data = await response.json();
         setProduct(data);
@@ -43,7 +43,7 @@ const ProductScreen = () => {
 
     const fetchComments = async () => {
       try {
-        const response = await fetch(`http://192.168.1.100:8082/api/comments/product/${id}`);
+        const response = await fetch(`http://192.168.100.8:8082/api/comments/product/${id}`);
         if (!response.ok) throw new Error("Failed to fetch comments");
         const data = await response.json();
         setComments(data);
@@ -71,7 +71,7 @@ const ProductScreen = () => {
     return Array.from({ length: 5 }, (_, index) => {
       const starRating = index + 1;
       const starColor = "#FFD700"; // Złoty kolor
-  
+
       if (rating >= starRating) {
         return (
           <MaterialCommunityIcons
@@ -102,25 +102,25 @@ const ProductScreen = () => {
       );
     });
   };
-  
+
 
   const formatDescription = (description: string) => {
     // Zastępujemy "\r\n" i "\n" na pojedynczy znak nowej linii
     const cleanedDescription = description.replace(/\\r\\n|\\n/g, "\n");
-  
+
     // Podziel tekst na poszczególne linie
     const lines = cleanedDescription.split("\n");
-  
+
     // Mapowanie każdej linii na bardziej czytelny format
     return lines.map((line, index) => {
       const trimmedLine = line.trim();
-  
+
       // Sprawdzenie, czy linia zawiera dwukropek
       const colonIndex = trimmedLine.indexOf(":");
       if (colonIndex !== -1) {
         const beforeColon = trimmedLine.substring(0, colonIndex + 1);
         const afterColon = trimmedLine.substring(colonIndex + 1).trim();
-  
+
         return (
           <View key={index} style={{ flexDirection: "row", marginBottom: 8 }}>
             <Text style={{ fontWeight: "bold", color: "#000" }}>{beforeColon} </Text>
@@ -128,7 +128,7 @@ const ProductScreen = () => {
           </View>
         );
       }
-  
+
       // Jeśli brak dwukropka, zwróć linię jako zwykły tekst
       return (
         <Text key={index} style={{ marginBottom: 8, color: "#666" }}>
@@ -137,8 +137,8 @@ const ProductScreen = () => {
       );
     });
   };
-  
-  
+
+
 
   if (loading) {
     return (

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, useColorScheme } from 'react-native';
-import { View, Text, StyleSheet,TextInput } from 'react-native';
-import {Icon } from 'react-native-paper';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { Icon } from 'react-native-paper';
 import ProductZone from '@/components/ProductZone';
 import CarouselSlider from '@/components/Slider';
 import { Colors } from '@/constants/Colors';
@@ -9,6 +9,28 @@ import { Colors } from '@/constants/Colors';
 export default function HomeScreen() {
     const colorScheme = useColorScheme();
     const themeColors = Colors[colorScheme || 'light'];
+
+    // Stan do kontrolowania wyświetlania komponentów
+    const [showCarousel, setShowCarousel] = useState(false);
+    const [showProductZone, setShowProductZone] = useState(false);
+
+    useEffect(() => {
+        // Opóźnienie dla CarouselSlider
+        const carouselTimer = setTimeout(() => {
+            setShowCarousel(true);
+        }, 2000); // Opóźnienie 2 sekundy
+
+        // Opóźnienie dla ProductZone
+        const productZoneTimer = setTimeout(() => {
+            setShowProductZone(true);
+        }, 4000); // Opóźnienie 4 sekundy
+
+        // Czyszczenie timerów po odmontowaniu komponentu
+        return () => {
+            clearTimeout(carouselTimer);
+            clearTimeout(productZoneTimer);
+        };
+    }, []);
 
     return (
         <ScrollView contentContainerStyle={[styles.container, { backgroundColor: themeColors.background }]}>
@@ -24,25 +46,26 @@ export default function HomeScreen() {
                     />
                 </View>
             </View>
-            <CarouselSlider />
-            <ProductZone />
+            {/* Warunkowe renderowanie komponentów po opóźnieniu */}
+            {showCarousel && <CarouselSlider />}
+            {showProductZone && <ProductZone />}
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingRight:10 //czarny bok po prawo
+        paddingRight: 10, // czarny bok po prawej
     },
     header: {
         marginBottom: 7,
-        padding:16
+        padding: 16,
     },
     greeting: {
         fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 8,
-        marginTop:15
+        marginTop: 15,
     },
     searchInput: {
         height: 40,
@@ -50,8 +73,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         color: '#fff',
     },
-    categoryList: {
-    },
+    categoryList: {},
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
