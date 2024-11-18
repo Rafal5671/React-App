@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, ActivityIndicator, ScrollView, Text, useColorScheme } from "react-native";
 import { Product } from "@/types/Product";
 import { Colors } from "@/constants/Colors";
-import ProductCard from "./ProductCard"; // Adjust import path if necessary
+import ProductCard from "./ProductCard";
 
 const ProductZone: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -13,7 +13,7 @@ const ProductZone: React.FC = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch("http://192.168.1.100:8082/api/products");
+                const response = await fetch("http://192.168.100.8:8082/api/products");
                 if (!response.ok) {
                     throw new Error("Failed to fetch products");
                 }

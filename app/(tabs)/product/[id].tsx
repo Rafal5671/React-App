@@ -7,12 +7,19 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import { Text, Button, Divider } from "react-native-paper";
+import { Text, Button } from "react-native-paper";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
-import { Product } from "@/types/Product";
 import { useCart } from "@/context/CartContext";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Opinion from "@/components/Opinion";
+
+interface Comment {
+  id: number;
+  rating: number;
+  description: string;
+  username: string;
+}
 
 const ProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -21,16 +28,31 @@ const ProductScreen = () => {
   const colors = Colors[colorScheme];
   const { addToCart } = useCart();
 
-  const [product, setProduct] = useState<Product | null>(null);
+  const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsLoading, setCommentsLoading] = useState<boolean>(true);
 
+  const fetchComments = async () => {
+    try {
+      setCommentsLoading(true);
+      const response = await fetch(`http://192.168.100.8:8082/api/comments/product/${id}`);
+      if (!response.ok) throw new Error("Failed to fetch comments");
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+    } finally {
+      setCommentsLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://192.168.1.100:8082/api/products/${id}`);
+        setLoading(true);
+        const response = await fetch(`http://192.168.100.8:8082/api/products/${id}`);
         if (!response.ok) throw new Error("Product not found");
         const data = await response.json();
         setProduct(data);
@@ -38,19 +60,6 @@ const ProductScreen = () => {
         setError("Failed to load product details. Please try again.");
       } finally {
         setLoading(false);
-      }
-    };
-
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(`http://192.168.1.100:8082/api/comments/product/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch comments");
-        const data = await response.json();
-        setComments(data);
-      } catch (error) {
-        console.error("Error fetching comments:", error);
-      } finally {
-        setCommentsLoading(false);
       }
     };
 
@@ -70,14 +79,14 @@ const ProductScreen = () => {
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, index) => {
       const starRating = index + 1;
-      const starColor = "#FFD700"; // Złoty kolor
-  
+      const starColor = "#FFD700";
+
       if (rating >= starRating) {
         return (
           <MaterialCommunityIcons
             key={index}
             name="star"
-            size={24} // Zwiększony rozmiar gwiazdki
+            size={24}
             color={starColor}
           />
         );
@@ -87,7 +96,7 @@ const ProductScreen = () => {
           <MaterialCommunityIcons
             key={index}
             name="star-half-full"
-            size={24} // Zwiększony rozmiar gwiazdki
+            size={24}
             color={starColor}
           />
         );
@@ -96,31 +105,24 @@ const ProductScreen = () => {
         <MaterialCommunityIcons
           key={index}
           name="star-outline"
-          size={24} // Zwiększony rozmiar gwiazdki
+          size={24}
           color={starColor}
         />
       );
     });
   };
-  
 
   const formatDescription = (description: string) => {
-    // Zastępujemy "\r\n" i "\n" na pojedynczy znak nowej linii
     const cleanedDescription = description.replace(/\\r\\n|\\n/g, "\n");
-  
-    // Podziel tekst na poszczególne linie
     const lines = cleanedDescription.split("\n");
-  
-    // Mapowanie każdej linii na bardziej czytelny format
+
     return lines.map((line, index) => {
       const trimmedLine = line.trim();
-  
-      // Sprawdzenie, czy linia zawiera dwukropek
       const colonIndex = trimmedLine.indexOf(":");
       if (colonIndex !== -1) {
         const beforeColon = trimmedLine.substring(0, colonIndex + 1);
         const afterColon = trimmedLine.substring(colonIndex + 1).trim();
-  
+
         return (
           <View key={index} style={{ flexDirection: "row", marginBottom: 8 }}>
             <Text style={{ fontWeight: "bold", color: "#000" }}>{beforeColon} </Text>
@@ -128,8 +130,7 @@ const ProductScreen = () => {
           </View>
         );
       }
-  
-      // Jeśli brak dwukropka, zwróć linię jako zwykły tekst
+
       return (
         <Text key={index} style={{ marginBottom: 8, color: "#666" }}>
           {trimmedLine}
@@ -137,12 +138,25 @@ const ProductScreen = () => {
       );
     });
   };
-  
-  
+
+  const calculateAverageRating = (comments: Comment[]) => {
+    if (comments.length === 0) return 0;
+    const totalRating = comments.reduce((sum, comment) => sum + comment.rating, 0);
+    return totalRating / comments.length;
+  };
+
+  const averageRating = calculateAverageRating(comments);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        }}
+      >
         <ActivityIndicator size="large" color={colors.tint} />
         <Text style={{ color: colors.text }}>Ładowanie produktu...</Text>
       </View>
@@ -151,7 +165,14 @@ const ProductScreen = () => {
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        }}
+      >
         <Text style={{ color: colors.text }}>{error}</Text>
         <Button onPress={() => router.back()}>Powrót</Button>
       </View>
@@ -160,7 +181,14 @@ const ProductScreen = () => {
 
   if (!product) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: colors.background }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: colors.background,
+        }}
+      >
         <Text style={{ color: colors.text }}>Produkt nie znaleziony</Text>
         <Button onPress={() => router.back()}>Powrót</Button>
       </View>
@@ -168,28 +196,49 @@ const ProductScreen = () => {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={{ padding: 20 }}>
-       <Image
-    source={{ uri: product.image }}
-    style={{ width: "100%", height: 300, borderRadius: 8, marginBottom: 16 }}
-    resizeMode="contain"
-  />
+    <ScrollView
+      style={{ backgroundColor: colors.background }}
+      contentContainerStyle={{ padding: 20 }}
+    >
+      <Image
+        source={{ uri: product.image }}
+        style={{ width: "100%", height: 300, borderRadius: 8, marginBottom: 16 }}
+        resizeMode="contain"
+      />
 
-  {/* Nazwa produktu */}
-  <Text style={{ fontSize: 24, fontWeight: "bold", color: colors.text, marginBottom: 8 }}>
-    {product.productName}
-  </Text>
+      {/* Nazwa produktu */}
+      <Text
+        style={{
+          fontSize: 24,
+          fontWeight: "bold",
+          color: colors.text,
+          marginBottom: 8,
+        }}
+      >
+        {product.productName}
+      </Text>
 
-  {/* Gwiazdki */}
-  <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-    <View style={{ flexDirection: "row", marginRight: 8 }}>{renderStars(product.rating)}</View>
-    <Text style={{ fontSize: 16, color: colors.text }}>{product.comments.length} ocen</Text>
-  </View>
+      {/* Gwiazdki i liczba ocen */}
+      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+        <View style={{ flexDirection: "row", marginRight: 8 }}>
+          {renderStars(averageRating)}
+        </View>
+        <Text style={{ fontSize: 16, color: colors.text }}>
+          {comments.length} ocen
+        </Text>
+      </View>
 
-  {/* Cena */}
-  <Text style={{ fontSize: 20, fontWeight: "bold", color: colors.text, marginBottom: 16 }}>
-    Cena: {product.price} zł
-  </Text>
+      {/* Cena */}
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          color: colors.text,
+          marginBottom: 16,
+        }}
+      >
+        Cena: {product.price} zł
+      </Text>
       <Button
         mode="contained"
         onPress={handleAddToCart}
@@ -202,14 +251,38 @@ const ProductScreen = () => {
 
       <View style={{ marginBottom: 24 }}>{formatDescription(product.description)}</View>
 
-      <Text style={{ fontSize: 18, fontWeight: "bold", color: colors.text, marginBottom: 16 }}>Opinie:</Text>
+      {/* Include the Opinion component and pass fetchComments */}
+      <Opinion productId={id} onOpinionAdded={fetchComments} />
+
+      <Text
+        style={{
+          fontSize: 18,
+          fontWeight: "bold",
+          color: colors.text,
+          marginBottom: 16,
+        }}
+      >
+        Opinie:
+      </Text>
       {commentsLoading ? (
         <ActivityIndicator size="small" color={colors.tint} />
       ) : comments.length > 0 ? (
         comments.map((comment) => (
-          <View key={comment.id} style={{ marginBottom: 16, padding: 12, borderRadius: 8, backgroundColor: colors.cardbackground }}>
-            <Text style={{ color: colors.text, fontWeight: "bold" }}>{comment.user.username}</Text>
-            <View style={{ flexDirection: "row", marginVertical: 8 }}>{renderStars(comment.rating)}</View>
+          <View
+            key={comment.id}
+            style={{
+              marginBottom: 16,
+              padding: 12,
+              borderRadius: 8,
+              backgroundColor: colors.cardbackground,
+            }}
+          >
+            <Text style={{ color: colors.text, fontWeight: "bold" }}>
+              {comment.username}
+            </Text>
+            <View style={{ flexDirection: "row", marginVertical: 8 }}>
+              {renderStars(comment.rating)}
+            </View>
             <Text style={{ color: colors.text }}>{comment.description}</Text>
           </View>
         ))

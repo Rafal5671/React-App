@@ -4,18 +4,17 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/cart.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/cart.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" afterDir="false" />
+    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of creating comments to product">
+      <change afterPath="$PROJECT_DIR$/components/ProfileComments.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/ProfileOrders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/delivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/delivery.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProfileZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileZone.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +25,11 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -46,7 +50,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "productbranch",
+    "git-widget-placeholder": "profile",
     "last_opened_file_path": "C:/Users/rafal/Desktop/react native/ReactAPP"
   }
 }]]></component>
@@ -59,6 +63,49 @@
       <option name="presentableId" value="Default" />
       <updated>1731767294691</updated>
     </task>
+    <task id="LOCAL-00001" summary="addition of delay">
+      <option name="closed" value="true" />
+      <created>1731942812295</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1731942812295</updated>
+    </task>
+    <task id="LOCAL-00002" summary="connection of orders to database">
+      <option name="closed" value="true" />
+      <created>1731945817436</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731945817436</updated>
+    </task>
+    <task id="LOCAL-00003" summary="addition of creating comments to product">
+      <option name="closed" value="true" />
+      <created>1731953117837</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1731953117837</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="addition of stripe payment" />
+    <MESSAGE value="addition of delay" />
+    <MESSAGE value="connection of orders to database" />
+    <MESSAGE value="addition of creating comments to product" />
+    <option name="LAST_COMMIT_MESSAGE" value="addition of creating comments to product" />
   </component>
 </project>
