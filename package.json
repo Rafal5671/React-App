@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@react-navigation/native": "^6.0.2",
+    "@stripe/stripe-react-native": "^0.39.0",
     "@types/react-native-snap-carousel": "^3.8.11",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
@@ -30,6 +31,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-async-storage": "^0.0.1",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-maps": "^1.20.0",
     "react-native-paper": "^5.12.5",
@@ -41,7 +43,9 @@
     "react-native-svg": "15.2.0",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-web": "~0.19.10"
+    "react-native-web": "~0.19.10",
+    "react-native-webview": "13.8.6",
+    "@react-native-async-storage/async-storage": "1.23.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
