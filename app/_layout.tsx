@@ -47,7 +47,7 @@ export default function RootLayout() {
     <AuthProvider>
       <CartProvider>
         <GestureHandlerRootView>
-          <StripeProvider publishableKey="your-publishable-key">
+          <StripeProvider publishableKey="pk_test_51PQtgQ03dG9DcKmUHYPxw5W8tRpSdhpIuHvWH5KRsSi7WXxvD32zFrpWTM43eBLZJfWWh7vbzrJi9rrO2BviI6pK00bBqaArZu">
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
               <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

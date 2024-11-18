@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, useColorScheme, TouchableOpacity, ActivityIndicator } from "react-native";
-import { Avatar, List, Divider, Text, Button, IconButton } from "react-native-paper";
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { Avatar, List, Divider, Text, IconButton } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
-import { useFocusEffect } from "@react-navigation/native";
+import ProfileOrders from "@/components/ProfileOrders"; // Import ProfileOrders
+import ProfileComments from "@/components/ProfileComments"; // Import ProfileComments
 
 interface User {
   name: string;
   lastName: string;
   email: string;
-  // Add any other user properties you might have
 }
 
 interface ProfileZoneProps {
@@ -16,83 +21,25 @@ interface ProfileZoneProps {
   onLogout: () => void;
 }
 
-interface Order {
-  id: number;
-  orderDate: string;
-  state: string;
-  basket: {
-    totalPrice: number;
-    // Inne pola, jeśli potrzebne
-  };
-}
-
 const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
-  const colorScheme = useColorScheme();
-  const colors = colorScheme === "dark" ? Colors.dark : Colors.light;
-  const [showOrders, setShowOrders] = useState(false);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loadingOrders, setLoadingOrders] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (showOrders && user) {
-      const fetchOrders = async () => {
-        setLoadingOrders(true);
-        try {
-          const response = await fetch(`http://192.168.100.8:8082/api/order/user/${user.email}`);
-          if (!response.ok) throw new Error("Failed to fetch orders");
-          const data = await response.json();
-          setOrders(data);
-        } catch (error) {
-          console.error("Error fetching orders:", error);
-        } finally {
-          setLoadingOrders(false);
-        }
-      };
-      fetchOrders();
-    }
-  }, [showOrders, user]);
+  const [view, setView] = useState<"profile" | "orders" | "comments">("profile");
+  const colors = Colors["light"]; // Replace with useColorScheme if needed
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>
-      {showOrders ? (
-        // Widok zamówień
-        <View style={styles.section}>
-          {/* Przycisk cofania */}
-          <IconButton
-            icon="arrow-left"
-            size={24}
-            onPress={() => setShowOrders(false)}
-            style={styles.backButton}
-            color={colors.text}
-          />
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Twoje zamówienia</Text>
-          {loadingOrders ? (
-            <ActivityIndicator size="large" color={colors.tint} />
-          ) : orders.length > 0 ? (
-            orders.map((order) => (
-              <View key={order.id}>
-                <List.Item
-                  title={`Zamówienie #${order.id}`}
-                  description={`Data: ${order.orderDate.substring(0, 10)} | Status: ${order.state}`}
-                  titleStyle={{ color: colors.text }}
-                  descriptionStyle={{ color: colors.icon }}
-                  left={() => <List.Icon icon="package" color={colors.icon} />}
-                  right={() => (
-                    <View style={styles.priceBadge}>
-                      <Text style={styles.priceText}>{order.basket.totalPrice.toFixed(2)} zł</Text>
-                    </View>
-                  )}
-                />
-                <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
-              </View>
-            ))
-          ) : (
-            <Text style={{ color: colors.text, paddingLeft: 16 }}>Brak zamówień do wyświetlenia.</Text>
-          )}
-        </View>
+      {view === "orders" && user ? (
+        <ProfileOrders
+          userEmail={user.email}
+          onBack={() => setView("profile")} // Powrót do widoku głównego
+        />
+      ) : view === "comments" && user ? (
+        <ProfileComments
+          userEmail={user.email} // Pass userEmail here
+          onBack={() => setView("profile")}
+        />
       ) : (
-        // Widok profilu
         <>
+          {/* Główny widok profilu */}
           <View style={[styles.profileSection, { backgroundColor: colors.background }]}>
             <Avatar.Text
               size={64}
@@ -109,9 +56,10 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
 
           <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
 
+          {/* Sekcja zakupów */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>Zakupy</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => { setShowOrders(true); }}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => setView("orders")}>
               <List.Item
                 title="Zamówienia"
                 titleStyle={{ color: colors.text }}
@@ -119,26 +67,12 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
                 right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
               />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
-              <List.Item
-                title="Dane do zamówień"
-                titleStyle={{ color: colors.text }}
-                left={() => (
-                  <List.Icon icon="file-document-outline" color={colors.icon} />
-                )}
-                right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => setView("comments")}>
               <List.Item
                 title="Opinie"
                 titleStyle={{ color: colors.text }}
                 left={() => <List.Icon icon="star-outline" color={colors.icon} />}
-                right={() => (
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>2</Text>
-                  </View>
-                )}
+                right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
               />
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
@@ -155,6 +89,7 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
 
           <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
 
+          {/* Sekcja pomocy */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>Pomoc</Text>
             <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
@@ -187,6 +122,7 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
             </TouchableOpacity>
           </View>
 
+          {/* Przycisk wylogowania */}
           <TouchableOpacity
             activeOpacity={0.8}
             style={[styles.logoutButton, { backgroundColor: "#FF5A5F" }]}
@@ -231,19 +167,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingLeft: 16,
   },
-  badge: {
-    backgroundColor: "#0a7ea4",
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  badgeText: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "bold",
-  },
   logoutButton: {
     paddingVertical: 12,
     paddingHorizontal: 24,
@@ -260,23 +183,6 @@ const styles = StyleSheet.create({
   version: {
     textAlign: "center",
     marginVertical: 10,
-  },
-  priceBadge: {
-    backgroundColor: "#0a7ea4",
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  priceText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  backButton: {
-    alignSelf: "flex-start",
-    marginLeft: 8,
   },
 });
 
