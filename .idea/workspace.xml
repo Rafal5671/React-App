@@ -4,19 +4,14 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of stripe payment">
+    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="connection of orders to database">
+      <change afterPath="$PROJECT_DIR$/components/Opinion.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/delivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/delivery.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +22,11 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -47,7 +47,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "profile",
     "last_opened_file_path": "C:/Users/rafal/Desktop/react native/ReactAPP"
   }
 }]]></component>
@@ -60,6 +60,23 @@
       <option name="presentableId" value="Default" />
       <updated>1731767294691</updated>
     </task>
+    <task id="LOCAL-00001" summary="addition of delay">
+      <option name="closed" value="true" />
+      <created>1731942812295</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1731942812295</updated>
+    </task>
+    <task id="LOCAL-00002" summary="connection of orders to database">
+      <option name="closed" value="true" />
+      <created>1731945817436</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1731945817436</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -75,6 +92,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="addition of stripe payment" />
-    <option name="LAST_COMMIT_MESSAGE" value="addition of stripe payment" />
+    <MESSAGE value="addition of delay" />
+    <MESSAGE value="connection of orders to database" />
+    <option name="LAST_COMMIT_MESSAGE" value="connection of orders to database" />
   </component>
 </project>
