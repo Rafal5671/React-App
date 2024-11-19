@@ -16,7 +16,7 @@ const SuccessScreen: React.FC = () => {
       <Text style={styles.message}>Dziękujemy za zakupy.</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push('/tabs/product/index')}
+        onPress={() => router.push('/')}
       >
         <Text style={styles.buttonText}>Kontynuuj zakupy</Text>
       </TouchableOpacity>
