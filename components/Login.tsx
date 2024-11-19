@@ -13,7 +13,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.100.8:8082/api/login", {
+      const response = await fetch("http://192.168.174.126:8082/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
       if (response.ok) {
         Alert.alert("Success", "Login successful!");
         const { user, basketId } = data;
-        login(user, basketId); // Pass both user and basketId
+        login(user, basketId);
       } else {
         Alert.alert("Error", data.message || "Invalid email or password");
       }

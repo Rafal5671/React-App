@@ -7,19 +7,16 @@ import Login from "@/components/Login";
 import { useAuth } from "@/context/AuthContext"; // Import useAuth
 
 const ProfileScreen: React.FC = () => {
-  const { isLoggedIn, user, login, logout } = useAuth(); // Use AuthContext
+  const { isLoggedIn, user, logout } = useAuth(); // Use AuthContext
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
 
-  const handleLoginSuccess = (userData: User) => {
-    login(userData); // Use login from AuthContext
-  };
 
   const handleLogout = async () => {
     try {
-      await fetch("http://192.168.100.8:8082/api/logout", {
+      await fetch("http://192.168.174.126:8082/api/logout", {
         method: "GET",
         credentials: "include",
       });
@@ -38,7 +35,7 @@ const ProfileScreen: React.FC = () => {
           <ProfileZone user={user} onLogout={handleLogout} />
         </View>
       ) : (
-        <Login onLoginSuccess={handleLoginSuccess} />
+        <Login/>
       )}
 
       {!isLoggedIn && (

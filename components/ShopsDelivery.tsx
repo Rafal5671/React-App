@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TouchableOpacity, ScrollView,useColorScheme } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { Colors } from '@/constants/Colors';
 
@@ -20,12 +20,14 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
-
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const themeColors = isDarkMode ? Colors.dark : Colors.light;
   // Fetch shop data from the backend API
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch('http://192.168.100.8:8082/api/shop');
+        const response = await fetch('http://192.168.174.126:8082/api/shop');
         const data = await response.json();
         setStores(data);
       } catch (error) {
@@ -51,7 +53,7 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
   return (
     <View style={styles.mapContainer}>
       {loading ? (
-        <ActivityIndicator size="large" color={Colors.tint} />
+        <ActivityIndicator size="large" color={themeColors.tint} />
       ) : (
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <MapView
@@ -88,10 +90,10 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
                 {selectedStore.street}, {selectedStore.city}, {selectedStore.postalCode}
               </Text>
               <TouchableOpacity
-                style={styles.selectButton}
+                style={[styles.selectButton, { backgroundColor: themeColors.tint }]}
                 onPress={handleSelectStore}
               >
-                <Text style={styles.selectButtonText}>Wybierz ten sklep</Text>
+                <Text style={[styles.selectButtonText, { color: themeColors.background }]}>Wybierz ten sklep</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -137,13 +139,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   selectButton: {
-    backgroundColor: Colors.tint,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
   },
   selectButtonText: {
-    color: Colors.background,
     fontSize: 16,
     fontWeight: 'bold',
   },
