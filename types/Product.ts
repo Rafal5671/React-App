@@ -3,9 +3,10 @@ export interface Product {
     productName: string;
     image: string;
     price: number;
-    cutPrice?: number | null; // Opcjonalne pole
+    cutPrice?: number | null;
     quantity: number;
     description: string;
     rating:number;
+    reviewCount: number;
     comments?: { id: number; rating: number; description: string; username: string }[];
 }
