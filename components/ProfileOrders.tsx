@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ScrollView, ActivityIndicator,useColorScheme } from "react-native";
 import { List, Divider, Text, IconButton } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 
@@ -20,14 +20,16 @@ interface ProfileOrdersProps {
 const ProfileOrders: React.FC<ProfileOrdersProps> = ({ userEmail, onBack }) => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState<boolean>(false);
-  const colors = Colors["light"]; // Replace with useColorScheme if needed
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  const colors = isDarkMode ? Colors.dark : Colors.light;
 
   useEffect(() => {
     const fetchOrders = async () => {
       setLoadingOrders(true);
       try {
         const response = await fetch(
-          `http://192.168.174.126:8082/api/order/user/${userEmail}`
+          `http:///192.168.174.126:8082/api/order/user/${userEmail}`
         );
         if (!response.ok) throw new Error("Failed to fetch orders");
         const data = await response.json();

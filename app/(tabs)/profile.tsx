@@ -13,10 +13,9 @@ const ProfileScreen: React.FC = () => {
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
 
-
   const handleLogout = async () => {
     try {
-      await fetch("http://192.168.174.126:8082/api/logout", {
+      await fetch(`http:///192.168.174.126:8082/api/logout`, {
         method: "GET",
         credentials: "include",
       });

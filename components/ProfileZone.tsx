@@ -4,6 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  useColorScheme
 } from "react-native";
 import { Avatar, List, Divider, Text, IconButton } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
@@ -23,7 +24,9 @@ interface ProfileZoneProps {
 
 const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
   const [view, setView] = useState<"profile" | "orders" | "comments">("profile");
-  const colors = Colors["light"]; // Replace with useColorScheme if needed
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  const colors = isDarkMode ? Colors.dark : Colors.light;
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]}>

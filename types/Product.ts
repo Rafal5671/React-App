@@ -7,4 +7,5 @@ export interface Product {
     quantity: number;
     description: string;
     rating:number;
+    comments?: { id: number; rating: number; description: string; username: string }[];
 }

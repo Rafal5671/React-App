@@ -23,11 +23,12 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
+
   // Fetch shop data from the backend API
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch('http://192.168.174.126:8082/api/shop');
+        const response = await fetch(`http:///192.168.174.126:8082/api/shop`);
         const data = await response.json();
         setStores(data);
       } catch (error) {

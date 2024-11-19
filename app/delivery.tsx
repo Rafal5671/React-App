@@ -53,10 +53,6 @@ const DeliveryScreen: React.FC = () => {
 
   const handleSubmitOrder = async () => {
     if (!isLoggedIn || !user || !basketId) {
-      console.log('isLoggedIn:', isLoggedIn);
-console.log('user:', user);
-console.log('basketId:', basketId);
-
       Alert.alert('Błąd', 'Musisz być zalogowany, aby złożyć zamówienie.');
       return;
     }
@@ -83,7 +79,7 @@ console.log('basketId:', basketId);
     };
 
     try {
-      const response = await fetch("http://192.168.174.126:8082/api/order", {
+      const response = await fetch(`http:///192.168.174.126:8082/api/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderDetails)
@@ -97,14 +93,14 @@ console.log('basketId:', basketId);
       clearCart();
 
       // Fetch the new basket ID
-      const basketResponse = await fetch(`http://192.168.174.126:8082/api/basket/user/${user.id}`);
+      const basketResponse = await fetch(`http:///192.168.174.126:8082/api/basket/user/${user.id}`);
       const newBasket = await basketResponse.json();
 
       if (newBasket && newBasket.id) {
         updateBasketId(newBasket.id);
       }
 
-      const paymentResponse = await fetch('http://192.168.174.126:8082/api/payment/create-payment-intent', {
+      const paymentResponse = await fetch(`http:///192.168.174.126:8082/api/payment/create-payment-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: basketTotalPrice * 100, currency: 'pln' }),
