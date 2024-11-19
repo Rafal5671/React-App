@@ -23,9 +23,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [basketId, setBasketId] = useState<number | null>(null);
 
-  const login = (userData: User) => {
+  const login = (userData: User, basketId: number) => {
     setIsLoggedIn(true);
     setUser(userData);
+    setBasketId(basketId);
   };
 
   const logout = () => {

@@ -20,6 +20,7 @@ const Login: React.FC = () => {
         },
         body: JSON.stringify({ email, password }),
       });
+      console.log(response);
 
       const data = await response.json();
 

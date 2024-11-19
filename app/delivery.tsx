@@ -53,6 +53,10 @@ const DeliveryScreen: React.FC = () => {
 
   const handleSubmitOrder = async () => {
     if (!isLoggedIn || !user || !basketId) {
+      console.log('isLoggedIn:', isLoggedIn);
+console.log('user:', user);
+console.log('basketId:', basketId);
+
       Alert.alert('Błąd', 'Musisz być zalogowany, aby złożyć zamówienie.');
       return;
     }
