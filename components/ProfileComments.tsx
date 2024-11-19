@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   ScrollView,
   Alert,
+  useColorScheme
 } from "react-native";
 import { Text, IconButton, Divider, List } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
@@ -26,7 +27,9 @@ interface ProfileCommentsProps {
 const ProfileComments: React.FC<ProfileCommentsProps> = ({ userEmail, onBack }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const colors = Colors["light"]; // Replace with useColorScheme if needed
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  const colors = isDarkMode ? Colors.dark : Colors.light;
 
   useEffect(() => {
     const fetchUserComments = async () => {
@@ -34,7 +37,7 @@ const ProfileComments: React.FC<ProfileCommentsProps> = ({ userEmail, onBack }) 
       try {
         console.log(`Fetching comments for userEmail: ${userEmail}`);
         const response = await fetch(
-          `http://192.168.100.8:8082/api/comments/user/${userEmail}`
+          `http:///192.168.174.126:8082/api/comments/user/${userEmail}`
         );
         if (!response.ok) {
           const errorDetails = await response.text();
@@ -44,9 +47,11 @@ const ProfileComments: React.FC<ProfileCommentsProps> = ({ userEmail, onBack }) 
         console.log(`Comments fetched successfully:`, data);
 
         setComments(data);
-      } catch (error) {
-        console.error("Error fetching user comments:", error);
-        Alert.alert("Błąd", `Nie udało się załadować komentarzy. Szczegóły: ${error.message}`);
+      } catch (error: unknown) { // specify the error type as unknown
+        // Use type assertion to tell TypeScript the error is an instance of Error
+        const typedError = error as Error;
+        console.error("Error fetching user comments:", typedError);
+        Alert.alert("Błąd", `Nie udało się załadować komentarzy. Szczegóły: ${typedError.message}`);
       } finally {
         setLoading(false);
       }
@@ -61,8 +66,7 @@ const ProfileComments: React.FC<ProfileCommentsProps> = ({ userEmail, onBack }) 
         icon="arrow-left"
         size={24}
         onPress={onBack}
-        style={styles.backButton}
-        color={colors.text}
+        style={[styles.backButton, { tintColor: colors.text }]}
       />
       <Text style={[styles.title, { color: colors.text }]}>Twoje Komentarze</Text>
       {loading ? (

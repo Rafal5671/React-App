@@ -24,8 +24,9 @@ interface Comment {
 const ProductScreen = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const colorScheme = useColorScheme() || "light";
-  const colors = Colors[colorScheme];
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  const colors = isDarkMode ? Colors.dark : Colors.light;
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState<any>(null);
@@ -33,11 +34,11 @@ const ProductScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsLoading, setCommentsLoading] = useState<boolean>(true);
-
+ 
   const fetchComments = async () => {
     try {
       setCommentsLoading(true);
-      const response = await fetch(`http://192.168.100.8:8082/api/comments/product/${id}`);
+      const response = await fetch(`http:///192.168.174.126:8082/api/comments/product/${id}`);
       if (!response.ok) throw new Error("Failed to fetch comments");
       const data = await response.json();
       setComments(data);
@@ -52,7 +53,7 @@ const ProductScreen = () => {
     const fetchProductData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://192.168.100.8:8082/api/products/${id}`);
+        const response = await fetch(`http:///192.168.174.126:8082/api/products/${id}`);
         if (!response.ok) throw new Error("Product not found");
         const data = await response.json();
         setProduct(data);

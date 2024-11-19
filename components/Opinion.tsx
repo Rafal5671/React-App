@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, StyleSheet, Alert } from "react-native";
+import { View, TextInput, StyleSheet, Alert,useColorScheme } from "react-native";
 import { Button, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext"; // Assume AuthContext is available
@@ -18,14 +18,16 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [existingOpinion, setExistingOpinion] = useState<any>(null);
 
-  const colors = Colors.light; // Modify to use `useColorScheme`
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === "dark";
+  const colors = isDarkMode ? Colors.dark : Colors.light;
 
   useEffect(() => {
     // Fetch the user's existing opinion for this product
     const fetchUserOpinion = async () => {
       try {
         const response = await fetch(
-          `http://192.168.100.8:8082/api/comments/product/${productId}`
+          `http:///192.168.174.126:8082/api/comments/product/${productId}`
         );
         if (!response.ok) throw new Error("Failed to fetch comments");
         const data = await response.json();
@@ -60,8 +62,8 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
 
     try {
       const url = isEditing
-        ? `http://192.168.100.8:8082/api/comments/${existingOpinion.id}` // Endpoint for editing
-        : "http://192.168.100.8:8082/api/comments"; // Endpoint for creating
+        ? `http:///192.168.174.126:8082/api/comments/${existingOpinion.id}` // Endpoint for editing
+        : "http:///192.168.174.126:8082/api/comments"; // Endpoint for creating
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -88,7 +90,7 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
 
       // Refresh the user opinion after saving
       const updatedOpinionResponse = await fetch(
-        `http://192.168.100.8:8082/api/comments/product/${productId}`
+        `http:///192.168.174.126:8082/api/comments/product/${productId}`
       );
       if (!updatedOpinionResponse.ok) throw new Error("Failed to fetch updated comment");
       const updatedData = await updatedOpinionResponse.json();

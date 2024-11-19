@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-
+import { TouchableOpacity } from 'react-native';
 const CancelScreen: React.FC = () => {
   const router = useRouter();
 
@@ -11,7 +11,7 @@ const CancelScreen: React.FC = () => {
       <Text style={styles.message}>Spróbuj ponownie później.</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => router.push('/tabs/product/index')}
+        onPress={() => router.push('/')}
       >
         <Text style={styles.buttonText}>Powrót do sklepu</Text>
       </TouchableOpacity>
