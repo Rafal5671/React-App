@@ -37,7 +37,7 @@ const ProfileComments: React.FC<ProfileCommentsProps> = ({ userEmail, onBack }) 
       try {
         console.log(`Fetching comments for userEmail: ${userEmail}`);
         const response = await fetch(
-          `http:///192.168.174.126:8082/api/comments/user/${userEmail}`
+          `http:///192.168.100.8:8082/api/comments/user/${userEmail}`
         );
         if (!response.ok) {
           const errorDetails = await response.text();

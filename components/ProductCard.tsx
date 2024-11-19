@@ -18,8 +18,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === "dark";
-  const colors = isDarkMode ? Colors.dark : Colors.light;
+  const colors = Colors[colorScheme ?? "light"];
   const router = useRouter();
 
   const handleProductClick = () => {
@@ -82,11 +81,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
           {/* Star Rating and Review Count */}
           <View style={styles.ratingContainer}>
-            <View style={styles.starContainer}>
-              {renderStars(product.rating)}
-            </View>
+            <View style={styles.starContainer}>{renderStars(product.rating)}</View>
             <Text style={[styles.ratingText, { color: colors.text }]}>
-              ({product.comments?.length ?? 0} ocen)
+              ({product.reviewCount} ocen)
             </Text>
           </View>
 

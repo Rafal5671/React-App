@@ -18,26 +18,25 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const colorScheme = useColorScheme();
 
-  // Load fonts
+  // Load fonts, including icon fonts
   const [fontsLoaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    // Load FontAwesome font
+    FontAwesome: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf'),
+    // Load MaterialIcons font
+    MaterialIcons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf'),
+    // Add other icon fonts if necessary
   });
-
-  // Debugging font loading
-  console.log('Fonts loaded:', fontsLoaded);
 
   useEffect(() => {
     async function prepare() {
       if (fontsLoaded) {
         await SplashScreen.hideAsync();
-      } else {
-        console.log('Waiting for fonts to load...');
       }
     }
 
     prepare();
   }, [fontsLoaded]);
-
 
   if (!fontsLoaded) {
     return null; // Prevent rendering until fonts are loaded
@@ -46,7 +45,7 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <CartProvider>
-        <GestureHandlerRootView>
+        <GestureHandlerRootView style={{ flex: 1 }}>
           <StripeProvider publishableKey="pk_test_51PQtgQ03dG9DcKmUHYPxw5W8tRpSdhpIuHvWH5KRsSi7WXxvD32zFrpWTM43eBLZJfWWh7vbzrJi9rrO2BviI6pK00bBqaArZu">
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
               <Stack>
