@@ -35,7 +35,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Text style={[styles.greeting, { color: themeColors.text }]}>Dzień dobry</Text>
         <View style={[styles.searchContainer, { backgroundColor: themeColors.background }]}>
-          <Icon name="magnify" size={20} color={themeColors.icon} />
+          <Icon source="magnify" size={20} color={themeColors.icon} />
           <TextInput
             style={[styles.searchInput, { color: themeColors.text }]}
             placeholder="Wyszukaj produkty..."

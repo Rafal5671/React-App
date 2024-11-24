@@ -27,7 +27,7 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
     const fetchUserOpinion = async () => {
       try {
         const response = await fetch(
-          `http:///192.168.100.8:8082/api/comments/product/${productId}`
+          `http:///192.168.1.101:8082/api/comments/product/${productId}`
         );
         if (!response.ok) throw new Error("Failed to fetch comments");
         const data = await response.json();

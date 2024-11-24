@@ -76,11 +76,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="result"
+        options={{
+          title: 'WYNIKI',
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="search" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="product/[id]"
         options={{
           href: null, // This prevents the tab from appearing in the tab bar
         }}
       />
+      
     </Tabs>
   );
 }

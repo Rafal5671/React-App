@@ -15,7 +15,7 @@ const ProfileScreen: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch(`http:///192.168.100.8:8082/api/logout`, {
+      await fetch(`http:///192.168.1.101:8082/api/logout`, {
         method: "GET",
         credentials: "include",
       });
