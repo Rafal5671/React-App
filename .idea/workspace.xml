@@ -15,12 +15,12 @@
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Opinion.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Opinion.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ProductCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductCard.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProfileComments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileComments.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProfileOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileOrders.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ShopsDelivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ShopsDelivery.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/types/Product.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types/Product.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +56,7 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "homepage",
+    "git-widget-placeholder": "FrontEnd",
     "last_opened_file_path": "C:/Users/rafal/Desktop/react native/ReactAPP"
   }
 }]]></component>
