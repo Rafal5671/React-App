@@ -16,11 +16,11 @@ const ResultScreen: React.FC = () => {
   const [currentView, setCurrentView] = useState<"main" | "categories" | "producers">("main");
 
   const dummyProducts: Product[] = [
-    { id: 1, productName: "Produkt 1", price: 99.99, rating: 4.5, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 2, productName: "Produkt 2", price: 199.99, rating: 4.0, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 3, productName: "Produkt 3", price: 149.99, rating: 5.0, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 4, productName: "Produkt 4", price: 50.00, rating: 3.5, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 5, productName: "Produkt 5", price: 300.00, rating: 4.8, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 }
+    { id: 1, productName: "Gigabyte AORUS 7 9KF i5-12500H/16GB/512 RTX4060 360Hz Gaming Laptop", price: 99.99, rating: 4.5, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
+    { id: 2, productName: "Gigabyte AORUS 7 9KF i5-12500H/16GB/512 RTX4060 360Hz Gaming Laptop", price: 199.99, rating: 4.0, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
+    { id: 3, productName: "Gigabyte AORUS 7 9KF i5-12500H/16GB/512 RTX4060 360Hz Gaming Laptop", price: 149.99, rating: 5.0, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
+    { id: 4, productName: "Gigabyte AORUS 7 9KF i5-12500H/16GB/512 RTX4060 360Hz Gaming Laptop", price: 50.00, rating: 3.5, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
+    { id: 5, productName: "Gigabyte AORUS 7 9KF i5-12500H/16GB/512 RTX4060 360Hz Gaming Laptop", price: 300.00, rating: 4.8, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 }
   ];
 
   const categories = ["Elektronika", "Odzież", "Sport", "Dom i Ogród", "Zabawki"];

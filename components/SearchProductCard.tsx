@@ -6,7 +6,7 @@ import {
     View,
     useColorScheme,
 } from "react-native";
-import { Card, Title, Text } from "react-native-paper";
+import { Card, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Product } from "@/types/Product";
 import { Colors } from "@/constants/Colors";
@@ -57,8 +57,27 @@ const SearchProductCard: React.FC<ProductCardProps> = ({ product }) => {
     };
 
     const handlePress = () => {
-        
+        router.push(`/product/${product.id}`);
     };
+
+    // Define default placeholders
+    const defaultProduct = {
+        productName: "Ultra-Wydajny Laptop Gamingowy XYZ Pro Max z Procesorem Intel i9 13. generacji i Ekranem OLED 4K UHD",
+        rating: 4.5,
+        reviews: 152,
+        processor: "Intel Core i9-13900H",
+        memory: "32GB DDR5",
+        graphics: "NVIDIA GeForce RTX 4090",
+        displayType: "OLED 4K UHD",
+        isPromo: true,
+        cutPrice: 15999,
+        price: 13999,
+        image: `https://via.placeholder.com/120x200?text=Laptop+XYZ+Pro+Max`,
+    };
+    
+
+    // Merge product data with default placeholders
+    const productData = { ...defaultProduct, ...product };
 
     return (
         <Card
@@ -68,97 +87,139 @@ const SearchProductCard: React.FC<ProductCardProps> = ({ product }) => {
             ]}
         >
             <TouchableOpacity onPress={handlePress} style={styles.row}>
-                {/* Obrazek produktu */}
+                {/* Image Section */}
                 <Image
                     source={{
-                        uri: product.image
-                            ? product.image
-                            : `https://via.placeholder.com/120x200?text=Brak+zdjęcia`,
+                        uri: productData.image,
                     }}
                     style={styles.image}
                 />
 
-                {/* Szczegóły produktu */}
-                <Card.Content style={styles.content}>
-                    <Title style={[styles.title, { color: colors.text }]}>
-                        {product.productName || "Nieznany produkt"}
-                    </Title>
+                {/* Details Section */}
+                <View style={styles.content}>
+                    {/* Promotion Tag */}
+                    {productData.isPromo && (
+                        <Text style={[styles.promoTag, { backgroundColor: colors.tint }]}>
+                            Promocja
+                        </Text>
+                    )}
 
-                    {/* Sekcja ocen */}
+                    {/* Product Name */}
+                    <Text style={[styles.title, { color: colors.text }]}>
+                        {productData.productName}
+                    </Text>
+
+                    {/* Rating Section */}
                     <View style={styles.ratingContainer}>
-                        {renderStars(product.rating || 0)}
+                        {renderStars(productData.rating)}
                         <Text style={[styles.ratingText, { color: colors.icon }]}>
-                            ({product.rating?.toFixed(1) || "0.0"})
+                            ({productData.reviews} opinie)
                         </Text>
                     </View>
 
-                    {/* Cena */}
-                    {product.cutPrice && (
-                        <Text style={[styles.cutPrice, { color: colors.icon }]}>
-                            {product.cutPrice} zł
+                    {/* Specifications */}
+                    <View style={styles.specifications}>
+                        <Text style={[styles.specText, { color: colors.icon }]}>
+                            Procesor: {productData.processor}
                         </Text>
-                    )}
-                    <Text style={[styles.price, { color: colors.text }]}>
-                        {product.price ?? "Brak ceny"} zł
-                    </Text>
-                </Card.Content>
+                        <Text style={[styles.specText, { color: colors.icon }]}>
+                            Pamięć: {productData.memory}
+                        </Text>
+                        <Text style={[styles.specText, { color: colors.icon }]}>
+                            Grafika: {productData.graphics}
+                        </Text>
+                        <Text style={[styles.specText, { color: colors.icon }]}>
+                            Typ ekranu: {productData.displayType}
+                        </Text>
+                    </View>
+
+                    {/* Price Section */}
+                    <View>
+                        {productData.cutPrice && (
+                            <Text style={[styles.cutPrice, { color: colors.icon }]}>
+                                {productData.cutPrice} zł
+                            </Text>
+                        )}
+                        <Text style={[styles.price, { color: colors.text }]}>
+                            {productData.price} zł
+                        </Text>
+                    </View>
+                </View>
             </TouchableOpacity>
         </Card>
     );
 };
 
+
 const styles = StyleSheet.create({
     card: {
-        marginVertical: 8,
-        width: "100%",
-        height: 200,
-        borderRadius: 10,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        marginVertical: 8, // Odstęp między kartami
+        width: "100%", // Szerokość dopasowana do kontenera
+        height: 250, // Zwiększona wysokość karty
+        borderRadius: 10, // Zaokrąglone rogi
+        shadowOffset: { width: 0, height: 2 }, // Cień: przesunięcie
+        shadowOpacity: 0.1, // Przezroczystość cienia
+        shadowRadius: 4, // Rozmycie cienia
+        elevation: 3, // Wysokość dla Androida
     },
     row: {
-        flexDirection: "row",
-        height: "100%",
+        flexDirection: "row", // Układ w poziomie
+        height: "100%", // Dopasowanie wysokości do karty
     },
     image: {
-        width: 120,
-        height: "100%",
-        resizeMode: "cover",
-        borderTopLeftRadius: 10,
-        borderBottomLeftRadius: 10,
-        marginRight: 10,
+        width: 180, // Stała szerokość obrazka
+        height: "100%", // Dopasowanie wysokości do karty
+        resizeMode: "cover", // Przycięcie obrazka
+        borderTopLeftRadius: 10, // Zaokrąglenie górnego lewego rogu
+        borderBottomLeftRadius: 10, // Zaokrąglenie dolnego lewego rogu
+        marginRight: 10, // Odstęp między obrazkiem a treścią
     },
     content: {
-        flex: 1,
-        paddingHorizontal: 10,
-        justifyContent: "center",
+        flex: 1, // Rozciąganie na pozostałą szerokość
+        paddingHorizontal: 10, // Wewnętrzne odstępy w poziomie
+        justifyContent: "space-between", // Rozkład elementów w pionie
+        paddingVertical: 8, // Wewnętrzne odstępy w pionie
+    },
+    promoTag: {
+        alignSelf: "flex-start", // Dopasowanie tagu do lewej strony
+        paddingHorizontal: 8, // Wewnętrzne odstępy w poziomie
+        paddingVertical: 2, // Wewnętrzne odstępy w pionie
+        borderRadius: 4, // Zaokrąglenie krawędzi
+        color: "white", // Kolor tekstu
+        fontSize: 12, // Rozmiar czcionki
+        marginBottom: 4, // Odstęp dolny
     },
     title: {
-        fontSize: 16,
-        fontWeight: "600",
-        marginBottom: 4,
+        fontSize: 16, // Rozmiar czcionki
+        fontWeight: "600", // Grubość czcionki
+        marginBottom: 4, // Odstęp dolny
     },
     ratingContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        marginBottom: 6,
+        flexDirection: "row", // Układ w poziomie
+        alignItems: "center", // Wyrównanie w pionie
+        marginBottom: 6, // Odstęp dolny
     },
     ratingText: {
-        fontSize: 14,
-        marginLeft: 4,
+        fontSize: 14, // Rozmiar czcionki
+        marginLeft: 4, // Odstęp od ikon gwiazdek
+    },
+    specifications: {
+        marginBottom: 6, // Odstęp dolny między specyfikacjami
+    },
+    specText: {
+        fontSize: 13, // Rozmiar czcionki
+        lineHeight: 18, // Odstęp między liniami tekstu
     },
     cutPrice: {
-        textDecorationLine: "line-through",
-        fontSize: 14,
-        marginTop: 2,
+        textDecorationLine: "line-through", // Przekreślenie
+        fontSize: 14, // Rozmiar czcionki
+        marginBottom: 2, // Odstęp dolny
     },
     price: {
-        fontSize: 18,
-        fontWeight: "bold",
-        marginBottom: 6,
+        fontSize: 18, // Rozmiar czcionki
+        fontWeight: "bold", // Grubość czcionki
     },
 });
+
 
 export default SearchProductCard;
