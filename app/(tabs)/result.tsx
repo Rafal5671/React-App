@@ -9,10 +9,10 @@ import { useLocalSearchParams } from "expo-router";
 
 const ResultScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [sortedProducts, setSortedProducts] = useState<Product[]>([]); // Added this line
   const [producers, setProducers] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 500 });
+  const [priceRange, setPriceRange] = useState<{ min: number | null; max: number | null }>({ min: null, max: null });
   const [hideUnavailable, setHideUnavailable] = useState<boolean>(false);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [filterSelectedProducers, setFilterSelectedProducers] = useState<string[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("Ocena klientów: od najlepszej");
   const [currentView, setCurrentView] = useState<"main" | "categories" | "producers">("main");
@@ -30,35 +30,35 @@ const ResultScreen: React.FC = () => {
     ? categoryIds.split(",").map((id) => parseInt(id))
     : [];
 
-  // Funkcja do pobierania producentów z backendu
+  // Function to fetch producers from the backend
   const fetchProducers = async () => {
-      let url = `http://192.168.100.9:8082/api/products/producers?`;
+    let url = `http://192.168.100.9:8082/api/products/producers?`;
 
-      if (categoryIds) {
-          const ids = categoryIds.split(",");
-          ids.forEach(id => {
-              url += `categoryIds=${id}&`;
-          });
-      }
-      if (searchQuery) {
-          url += `searchQuery=${encodeURIComponent(searchQuery)}&`;
-      }
+    if (categoryIds) {
+      const ids = categoryIds.split(",");
+      ids.forEach(id => {
+        url += `categoryIds=${id}&`;
+      });
+    }
+    if (searchQuery) {
+      url += `searchQuery=${encodeURIComponent(searchQuery)}&`;
+    }
 
-      console.log("Fetching producers from URL:", url);
+    console.log("Fetching producers from URL:", url);
 
-      try {
-          const response = await fetch(url, {
-              method: 'GET',
-              credentials: 'include',
-          });
-          const data = await response.json();
-          setProducers(data);
-      } catch (error) {
-          console.error("Error fetching producers:", error);
-      }
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const data = await response.json();
+      setProducers(data);
+    } catch (error) {
+      console.error("Error fetching producers:", error);
+    }
   };
 
-  // Funkcja do pobierania produktów z backendu
+  // Function to fetch products from the backend
   const fetchProducts = async () => {
     let url = `http://192.168.100.9:8082/api/products/filter?`;
 
@@ -76,6 +76,12 @@ const ResultScreen: React.FC = () => {
     if (searchQuery) {
       url += `searchQuery=${encodeURIComponent(searchQuery)}&`;
     }
+    if (priceRange.min !== null) {
+      url += `minPrice=${encodeURIComponent(priceRange.min.toString())}&`;
+    }
+    if (priceRange.max !== null) {
+      url += `maxPrice=${encodeURIComponent(priceRange.max.toString())}&`;
+    }
 
     console.log("Fetching products from URL:", url);
 
@@ -92,20 +98,24 @@ const ResultScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    // Inicjalizacja wybranych producentów na podstawie parametrów nawigacji
+    // Initialize selected producers based on navigation params
     setSelectedProducers(producerParam ? [producerParam] : []);
     setFilterSelectedProducers(producerParam ? [producerParam] : []);
 
-    // Resetowanie innych filtrów
+    // Reset other filters
     setHideUnavailable(false);
-    setPriceRange({ min: 0, max: 500 });
+    setPriceRange({ min: null, max: null }); // Set default values to null
     setSelectedSort("Ocena klientów: od najlepszej");
   }, [categoryIds, searchQuery, producerParam]);
 
   useEffect(() => {
     fetchProducts();
     fetchProducers();
-  }, [categoryIds, searchQuery, selectedProducers]);
+  }, [categoryIds, searchQuery, selectedProducers, priceRange]);
+
+  useEffect(() => {
+    applySorting();
+  }, [products, selectedSort]);
 
   const handleProducerToggle = (producer: string) => {
     if (filterSelectedProducers.includes(producer)) {
@@ -130,7 +140,7 @@ const ResultScreen: React.FC = () => {
     sortSheetRef.current?.close();
     filterSheetRef.current?.expand();
     setCurrentView("main");
-    setFilterSelectedProducers(selectedProducers); // Inicjalizacja stanu tymczasowego
+    setFilterSelectedProducers(selectedProducers); // Initialize temporary state
   };
 
   const handleOpenSort = () => {
@@ -139,24 +149,30 @@ const ResultScreen: React.FC = () => {
   };
 
   const applyFilters = () => {
-    setSelectedProducers(filterSelectedProducers); // Aktualizuje stan producentów
+    setSelectedProducers(filterSelectedProducers);
     filterSheetRef.current?.close();
+    fetchProducts(); // Fetch products after applying filters
   };
 
-  const applySorting = () => {
-    let sortedProducts = [...products];
+  const applySorting = useCallback(() => {
+    let sorted = [...products];
     switch (selectedSort) {
       case "Ocena klientów: od najlepszej":
-        sortedProducts = sortedProducts.sort((a, b) => b.rating - a.rating);
+        sorted.sort((a, b) => b.rating - a.rating);
         break;
       case "Cena: od najtańszych":
-        sortedProducts = sortedProducts.sort((a, b) => a.price - b.price);
+        sorted.sort((a, b) => a.price - b.price);
         break;
       case "Cena: od najdroższych":
-        sortedProducts = sortedProducts.sort((a, b) => b.price - a.price);
+        sorted.sort((a, b) => b.price - a.price);
         break;
     }
-    setProducts(sortedProducts);
+    setSortedProducts(sorted);
+  }, [products, selectedSort]);
+
+  // Apply sorting from the bottom sheet
+  const handleApplySort = () => {
+    applySorting(); // Update sorted list
     sortSheetRef.current?.close();
   };
 
@@ -168,7 +184,7 @@ const ResultScreen: React.FC = () => {
       </View>
       <ScrollView>
         {producers.map((producer) => {
-          const isDisabled = categoryIds.includes("1") && producer === "G4M3R"; // Zakładam, że "G4M3R" to wymagany producent dla kategorii o ID 1
+          const isDisabled = categoryIds.includes("1") && producer === "G4M3R"; // Assuming "G4M3R" is required for category ID 1
           return (
             <View style={styles.checkboxContainer} key={producer}>
               <Checkbox
@@ -195,17 +211,21 @@ const ResultScreen: React.FC = () => {
       <View style={styles.priceRange}>
         <TextInput
           label="Min"
-          value={String(priceRange.min)}
+          value={priceRange.min !== null ? String(priceRange.min) : ''}
           keyboardType="numeric"
-          onChangeText={(text) => setPriceRange({ ...priceRange, min: Number(text) })}
+          onChangeText={(text) =>
+            setPriceRange({ ...priceRange, min: text !== '' ? Number(text) : null })
+          }
           style={styles.input}
         />
         <Text style={styles.toText}>-</Text>
         <TextInput
           label="Max"
-          value={String(priceRange.max)}
+          value={priceRange.max !== null ? String(priceRange.max) : ''}
           keyboardType="numeric"
-          onChangeText={(text) => setPriceRange({ ...priceRange, max: Number(text) })}
+          onChangeText={(text) =>
+            setPriceRange({ ...priceRange, max: text !== '' ? Number(text) : null })
+          }
           style={styles.input}
         />
       </View>
@@ -258,15 +278,15 @@ const ResultScreen: React.FC = () => {
         </View>
       </Appbar.Header>
 
-      {/* Lista produktów */}
+      {/* Product List */}
       <FlatList
-        data={products}
+        data={sortedProducts}
         renderItem={renderProductCard}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.productList}
       />
 
-      {/* BottomSheet dla filtrów */}
+      {/* BottomSheet for filters */}
       <BottomSheet
         ref={filterSheetRef}
         index={-1}
@@ -280,7 +300,7 @@ const ResultScreen: React.FC = () => {
         </BottomSheetView>
       </BottomSheet>
 
-      {/* BottomSheet dla sortowania */}
+      {/* BottomSheet for sorting */}
       <BottomSheet
         ref={sortSheetRef}
         index={-1}
@@ -303,7 +323,7 @@ const ResultScreen: React.FC = () => {
             <RadioButton.Item label="Cena: od najdroższych" value="Cena: od najdroższych" />
           </RadioButton.Group>
 
-          <Button mode="contained" onPress={applySorting}>
+          <Button mode="contained" onPress={handleApplySort}>
             Zastosuj
           </Button>
         </BottomSheetView>
@@ -323,11 +343,11 @@ const styles = StyleSheet.create({
   sheetHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   sheetTitle: { fontSize: 18, fontWeight: "bold", flex: 1, textAlign: "center" },
   filterSubtitle: { fontSize: 16, fontWeight: "bold", marginVertical: 10 },
-  priceRange: { flexDirection: "row", justifyContent: "space-between" },
-  input: { width: '45%', marginBottom: 10 },
-  toText: { alignSelf: "center", fontSize: 16 },
+  priceRange: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
+  input: { flex: 1, marginHorizontal: 5 },
+  toText: { fontSize: 16 },
   categoryButton: { width: "100%", marginBottom: 10 },
-  checkboxContainer: { flexDirection: "row", alignItems: "center", marginTop: 20 },
+  checkboxContainer: { flexDirection: "row", alignItems: "center", marginVertical: 5 },
 });
 
 export default ResultScreen;
