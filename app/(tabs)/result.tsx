@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import SearchProductCard from "@/components/SearchProductCard";
 import { Product } from "@/types/Product";
+import { useLocalSearchParams } from "expo-router"; // Zmiana importu
 
 const ResultScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -15,20 +16,53 @@ const ResultScreen: React.FC = () => {
   const [selectedSort, setSelectedSort] = useState<string>("Ocena klientów: od najlepszej");
   const [currentView, setCurrentView] = useState<"main" | "categories" | "producers">("main");
 
-  const dummyProducts: Product[] = [
-    { id: 1, productName: "Produkt 1", price: 99.99, rating: 4.5, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 2, productName: "Produkt 2", price: 199.99, rating: 4.0, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 3, productName: "Produkt 3", price: 149.99, rating: 5.0, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 4, productName: "Produkt 4", price: 50.00, rating: 3.5, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 },
-    { id: 5, productName: "Produkt 5", price: 300.00, rating: 4.8, image: "https://via.placeholder.com/150", quantity: 0, description: "", reviewCount: 0 }
-  ];
+  const searchParams = useLocalSearchParams(); // Użycie useLocalSearchParams
+  const categoryIds = searchParams.categoryIds || "";
+  const producer = searchParams.producer || "";
+  const searchQuery = searchParams.searchQuery || "";
+
+  console.log({ categoryIds, producer, searchQuery });
+
+  const categoryIdArray = categoryIds
+    ? categoryIds.split(",").map((id) => parseInt(id))
+    : [];
 
   const categories = ["Elektronika", "Odzież", "Sport", "Dom i Ogród", "Zabawki"];
   const producers = ["Sony", "Samsung", "Apple", "LG", "Panasonic"];
 
+  const fetchProducts = async () => {
+    let url = `http://192.168.100.9:8082/api/products/filter?`;
+
+    if (categoryIds) {
+      const ids = categoryIds.split(",");
+      ids.forEach(id => {
+        url += `categoryIds=${id}&`;
+      });
+    }
+    if (producer) {
+      url += `producer=${encodeURIComponent(producer)}&`;
+    }
+    if (searchQuery) {
+      url += `searchQuery=${encodeURIComponent(searchQuery)}&`;
+    }
+
+    console.log("Fetching products from URL:", url); // Dodane logowanie
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
   useEffect(() => {
-    setProducts(dummyProducts);
-  }, []);
+    fetchProducts();
+  }, [categoryIds, producer, searchQuery]);
 
   const handleCategoryToggle = (category: string) => {
     if (selectedCategories.includes(category)) {
@@ -58,14 +92,14 @@ const ResultScreen: React.FC = () => {
   }, []);
 
   const handleOpenFilter = () => {
-    sortSheetRef.current?.close(); // Close the sort sheet if open
-    filterSheetRef.current?.expand(); // Open the filter sheet
+    sortSheetRef.current?.close();
+    filterSheetRef.current?.expand();
     setCurrentView("main");
   };
-  
+
   const handleOpenSort = () => {
-    filterSheetRef.current?.close(); // Close the filter sheet if open
-    sortSheetRef.current?.expand(); // Open the sort sheet
+    filterSheetRef.current?.close();
+    sortSheetRef.current?.expand();
   };
 
   const applySorting = () => {
@@ -208,7 +242,7 @@ const ResultScreen: React.FC = () => {
         </View>
       </Appbar.Header>
 
-      {/* Product list */}
+      {/* Lista produktów */}
       <FlatList
         data={products}
         renderItem={renderProductCard}
@@ -216,7 +250,7 @@ const ResultScreen: React.FC = () => {
         contentContainerStyle={styles.productList}
       />
 
-      {/* BottomSheet for filters */}
+      {/* BottomSheet dla filtrów */}
       <BottomSheet
         ref={filterSheetRef}
         index={-1}
@@ -231,7 +265,7 @@ const ResultScreen: React.FC = () => {
         </BottomSheetView>
       </BottomSheet>
 
-      {/* BottomSheet for sorting */}
+      {/* BottomSheet dla sortowania */}
       <BottomSheet
         ref={sortSheetRef}
         index={-1}

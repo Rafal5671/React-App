@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView } from "react-native-gesture-handler";
+import { useRouter } from "expo-router";
 import {
   View,
   Text,
@@ -12,17 +13,41 @@ import { List, Icon, Divider } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
 
 const categories = [
-  { title: "Laptopy i komputery", icon: "laptop" },
-  { title: "Smartfony i smartwatche", icon: "cellphone" },
-  { title: "Podzespoły komputerowe", icon: "memory" },
-  { title: "Gaming i streaming", icon: "gamepad-variant" },
+  {
+    title: "Laptopy i komputery",
+    icon: "laptop",
+    categoryIds: [1],
+  },
+  {
+    title: "Smartfony i smartwatche",
+    icon: "cellphone",
+    categoryIds: [2, 4],
+  },
+  {
+    title: "Monitory",
+    icon: "monitor",
+    categoryIds: [3],
+  },
+  {
+    title: "Podzespoły komputerowe",
+    icon: "memory",
+    categoryIds: [5],
+  },
+  {
+    title: "Gaming i streaming",
+    icon: "gamepad-variant",
+    categoryIds: [1],
+    producer: "G4M3R",
+  },
 ];
 
 export default function SearchScreen() {
   const colorScheme = useColorScheme();
+  const router = useRouter();
   const themeColors = colorScheme === "dark" ? Colors.dark : Colors.light;
-
+  const [searchQuery, setSearchQuery] = useState("");
   return (
+
     <ScrollView
       contentContainerStyle={[
         styles.container,
@@ -40,24 +65,48 @@ export default function SearchScreen() {
           ]}
         >
           <Icon source="magnify" size={20} color={themeColors.icon} />
-          <TextInput
-            style={[styles.searchInput, { color: themeColors.text }]}
-            placeholder="Wyszukaj produkty..."
-            placeholderTextColor="#888"
-            selectionColor="#fff"
-          />
-        </View>
+            <TextInput
+              style={[styles.searchInput, { color: themeColors.text }]}
+              placeholder="Wyszukaj produkty..."
+              placeholderTextColor="#888"
+              selectionColor="#fff"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={() => {
+                if (searchQuery.trim() !== "") {
+                 router.push({
+                   pathname: "/(tabs)/result",
+                   params: {
+                     categoryIds: category.categoryIds.join(","),
+                     producer: category.producer || "",
+                   },
+                 });
+                }
+              }}
+            />
+          </View>
       </View>
-      <View style={styles.categoryList}>
-        {categories.map((category, index) => (
-          <View
-            key={index}
-            style={[
-              styles.listItemContainer,
-              { backgroundColor: themeColors.background },
-            ]}
-          >
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
+          <View style={styles.categoryList}>
+            {categories.map((category, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.listItemContainer,
+                  { backgroundColor: themeColors.background },
+                ]}
+              >
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/(tabs)/result",
+                      params: {
+                        categoryIds: category.categoryIds.join(","),
+                        producer: category.producer || "",
+                      },
+                    });
+                  }}
+                >
               <List.Item
                 title={category.title}
                 titleStyle={{ color: themeColors.text }}

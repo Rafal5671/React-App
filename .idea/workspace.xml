@@ -6,11 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of creating comments to product">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/result.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/result.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/search.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/search.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/delivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/delivery.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.tsx" afterDir="false" />
@@ -45,6 +45,7 @@
   &quot;associatedIndex&quot;: 1
 }</component>
   <component name="ProjectId" id="2ow4RJt0ecZK7lu4BUu2Jbznguo" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -56,8 +57,9 @@
     "RunOnceActivity.cidr.known.project.marker": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "FrontEnd",
-    "last_opened_file_path": "C:/Users/rafal/Desktop/react native/ReactAPP"
+    "git-widget-placeholder": "serch",
+    "last_opened_file_path": "C:/Users/rafal/Desktop/react native/ReactAPP",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
