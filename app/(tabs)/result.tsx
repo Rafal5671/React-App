@@ -9,7 +9,7 @@ import { useLocalSearchParams } from "expo-router";
 
 const ResultScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [sortedProducts, setSortedProducts] = useState<Product[]>([]); // Added this line
+  const [sortedProducts, setSortedProducts] = useState<Product[]>([]);
   const [producers, setProducers] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<{ min: number | null; max: number | null }>({ min: null, max: null });
   const [hideUnavailable, setHideUnavailable] = useState<boolean>(false);
@@ -21,10 +21,11 @@ const ResultScreen: React.FC = () => {
   const categoryIds = searchParams.categoryIds || "";
   const searchQuery = searchParams.searchQuery || "";
   const producerParam = searchParams.producer || "";
+  const shouldIncludeG4M3R = searchParams.shouldIncludeG4M3R === "true"; // Extract and convert to boolean
 
   const [selectedProducers, setSelectedProducers] = useState<string[]>(producerParam ? [producerParam] : []);
 
-  console.log({ categoryIds, searchQuery, producerParam });
+  console.log({ categoryIds, searchQuery, producerParam, shouldIncludeG4M3R });
 
   const categoryIdArray = categoryIds
     ? categoryIds.split(",").map((id) => parseInt(id))
@@ -99,14 +100,19 @@ const ResultScreen: React.FC = () => {
 
   useEffect(() => {
     // Initialize selected producers based on navigation params
-    setSelectedProducers(producerParam ? [producerParam] : []);
-    setFilterSelectedProducers(producerParam ? [producerParam] : []);
+    if (shouldIncludeG4M3R) {
+      setSelectedProducers(['G4M3R']);
+      setFilterSelectedProducers(['G4M3R']);
+    } else {
+      setSelectedProducers(producerParam ? [producerParam] : []);
+      setFilterSelectedProducers(producerParam ? [producerParam] : []);
+    }
 
     // Reset other filters
     setHideUnavailable(false);
     setPriceRange({ min: null, max: null }); // Set default values to null
     setSelectedSort("Ocena klientów: od najlepszej");
-  }, [categoryIds, searchQuery, producerParam]);
+  }, [categoryIds, searchQuery, producerParam, shouldIncludeG4M3R]);
 
   useEffect(() => {
     fetchProducts();
@@ -149,7 +155,9 @@ const ResultScreen: React.FC = () => {
   };
 
   const applyFilters = () => {
-    setSelectedProducers(filterSelectedProducers);
+    if (!shouldIncludeG4M3R) {
+      setSelectedProducers(filterSelectedProducers);
+    }
     filterSheetRef.current?.close();
     fetchProducts(); // Fetch products after applying filters
   };
@@ -183,19 +191,27 @@ const ResultScreen: React.FC = () => {
         <IconButton icon="arrow-left" onPress={() => setCurrentView("main")} size={24} />
       </View>
       <ScrollView>
-        {producers.map((producer) => {
-          const isDisabled = categoryIds.includes("1") && producer === "G4M3R"; // Assuming "G4M3R" is required for category ID 1
-          return (
+        {shouldIncludeG4M3R ? (
+          // Only display G4M3R, disabled and checked
+          <View style={styles.checkboxContainer} key="G4M3R">
+            <Checkbox
+              status="checked"
+              disabled={true}
+            />
+            <Text style={{ color: "gray" }}>G4M3R</Text>
+          </View>
+        ) : (
+          // Display all producers normally
+          producers.map((producer) => (
             <View style={styles.checkboxContainer} key={producer}>
               <Checkbox
                 status={filterSelectedProducers.includes(producer) ? "checked" : "unchecked"}
                 onPress={() => handleProducerToggle(producer)}
-                disabled={isDisabled}
               />
-              <Text style={{ color: isDisabled ? "gray" : "black" }}>{producer}</Text>
+              <Text>{producer}</Text>
             </View>
-          );
-        })}
+          ))
+        )}
       </ScrollView>
     </>
   );
@@ -230,14 +246,19 @@ const ResultScreen: React.FC = () => {
         />
       </View>
 
-      <Text style={styles.filterSubtitle}>Producent</Text>
-      <Button
-        mode="outlined"
-        style={styles.categoryButton}
-        onPress={() => setCurrentView("producers")}
-      >
-        Wybierz producenta
-      </Button>
+       {/* Hide the "Wybierz producenta" button when shouldIncludeG4M3R is true */}
+       {!shouldIncludeG4M3R && (
+         <>
+           <Text style={styles.filterSubtitle}>Producent</Text>
+           <Button
+             mode="outlined"
+             style={styles.categoryButton}
+             onPress={() => setCurrentView("producers")}
+           >
+             Wybierz producenta
+           </Button>
+         </>
+       )}
 
       <View style={styles.checkboxContainer}>
         <Checkbox

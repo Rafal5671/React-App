@@ -38,6 +38,7 @@ const categories = [
     icon: "gamepad-variant",
     categoryIds: [1],
     producer: "G4M3R",
+    shouldIncludeG4M3R: true,
   },
 ];
 
@@ -78,6 +79,7 @@ export default function SearchScreen() {
                     pathname: "/(tabs)/result",
                     params: {
                       searchQuery: searchQuery.trim(),
+                      shouldIncludeG4M3R: "false",
                     },
                   });
                 }
@@ -102,6 +104,7 @@ export default function SearchScreen() {
                       params: {
                         categoryIds: category.categoryIds.join(","),
                         producer: category.producer || "",
+                        shouldIncludeG4M3R: category.shouldIncludeG4M3R ? "true" : "false",
                       },
                     });
                   }}
