@@ -74,13 +74,12 @@ export default function SearchScreen() {
               onChangeText={setSearchQuery}
               onSubmitEditing={() => {
                 if (searchQuery.trim() !== "") {
-                 router.push({
-                   pathname: "/(tabs)/result",
-                   params: {
-                     categoryIds: category.categoryIds.join(","),
-                     producer: category.producer || "",
-                   },
-                 });
+                  router.push({
+                    pathname: "/(tabs)/result",
+                    params: {
+                      searchQuery: searchQuery.trim(),
+                    },
+                  });
                 }
               }}
             />

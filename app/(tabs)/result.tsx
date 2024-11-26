@@ -5,31 +5,60 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import SearchProductCard from "@/components/SearchProductCard";
 import { Product } from "@/types/Product";
-import { useLocalSearchParams } from "expo-router"; // Zmiana importu
+import { useLocalSearchParams } from "expo-router";
 
 const ResultScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [producers, setProducers] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 500 });
   const [hideUnavailable, setHideUnavailable] = useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedProducers, setSelectedProducers] = useState<string[]>([]);
+  const [filterSelectedProducers, setFilterSelectedProducers] = useState<string[]>([]);
   const [selectedSort, setSelectedSort] = useState<string>("Ocena klientów: od najlepszej");
   const [currentView, setCurrentView] = useState<"main" | "categories" | "producers">("main");
 
-  const searchParams = useLocalSearchParams(); // Użycie useLocalSearchParams
+  const searchParams = useLocalSearchParams();
   const categoryIds = searchParams.categoryIds || "";
-  const producer = searchParams.producer || "";
   const searchQuery = searchParams.searchQuery || "";
+  const producerParam = searchParams.producer || "";
 
-  console.log({ categoryIds, producer, searchQuery });
+  const [selectedProducers, setSelectedProducers] = useState<string[]>(producerParam ? [producerParam] : []);
+
+  console.log({ categoryIds, searchQuery, producerParam });
 
   const categoryIdArray = categoryIds
     ? categoryIds.split(",").map((id) => parseInt(id))
     : [];
 
-  const categories = ["Elektronika", "Odzież", "Sport", "Dom i Ogród", "Zabawki"];
-  const producers = ["Sony", "Samsung", "Apple", "LG", "Panasonic"];
+  // Funkcja do pobierania producentów z backendu
+  const fetchProducers = async () => {
+      let url = `http://192.168.100.9:8082/api/products/producers?`;
 
+      if (categoryIds) {
+          const ids = categoryIds.split(",");
+          ids.forEach(id => {
+              url += `categoryIds=${id}&`;
+          });
+      }
+      if (searchQuery) {
+          url += `searchQuery=${encodeURIComponent(searchQuery)}&`;
+      }
+
+      console.log("Fetching producers from URL:", url);
+
+      try {
+          const response = await fetch(url, {
+              method: 'GET',
+              credentials: 'include',
+          });
+          const data = await response.json();
+          setProducers(data);
+      } catch (error) {
+          console.error("Error fetching producers:", error);
+      }
+  };
+
+  // Funkcja do pobierania produktów z backendu
   const fetchProducts = async () => {
     let url = `http://192.168.100.9:8082/api/products/filter?`;
 
@@ -39,14 +68,16 @@ const ResultScreen: React.FC = () => {
         url += `categoryIds=${id}&`;
       });
     }
-    if (producer) {
-      url += `producer=${encodeURIComponent(producer)}&`;
+    if (selectedProducers.length > 0) {
+      selectedProducers.forEach(producer => {
+        url += `producers=${encodeURIComponent(producer)}&`;
+      });
     }
     if (searchQuery) {
       url += `searchQuery=${encodeURIComponent(searchQuery)}&`;
     }
 
-    console.log("Fetching products from URL:", url); // Dodane logowanie
+    console.log("Fetching products from URL:", url);
 
     try {
       const response = await fetch(url, {
@@ -61,22 +92,26 @@ const ResultScreen: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, [categoryIds, producer, searchQuery]);
+    // Inicjalizacja wybranych producentów na podstawie parametrów nawigacji
+    setSelectedProducers(producerParam ? [producerParam] : []);
+    setFilterSelectedProducers(producerParam ? [producerParam] : []);
 
-  const handleCategoryToggle = (category: string) => {
-    if (selectedCategories.includes(category)) {
-      setSelectedCategories(selectedCategories.filter((c) => c !== category));
-    } else {
-      setSelectedCategories([...selectedCategories, category]);
-    }
-  };
+    // Resetowanie innych filtrów
+    setHideUnavailable(false);
+    setPriceRange({ min: 0, max: 500 });
+    setSelectedSort("Ocena klientów: od najlepszej");
+  }, [categoryIds, searchQuery, producerParam]);
+
+  useEffect(() => {
+    fetchProducts();
+    fetchProducers();
+  }, [categoryIds, searchQuery, selectedProducers]);
 
   const handleProducerToggle = (producer: string) => {
-    if (selectedProducers.includes(producer)) {
-      setSelectedProducers(selectedProducers.filter((p) => p !== producer));
+    if (filterSelectedProducers.includes(producer)) {
+      setFilterSelectedProducers(filterSelectedProducers.filter((p) => p !== producer));
     } else {
-      setSelectedProducers([...selectedProducers, producer]);
+      setFilterSelectedProducers([...filterSelectedProducers, producer]);
     }
   };
 
@@ -95,11 +130,17 @@ const ResultScreen: React.FC = () => {
     sortSheetRef.current?.close();
     filterSheetRef.current?.expand();
     setCurrentView("main");
+    setFilterSelectedProducers(selectedProducers); // Inicjalizacja stanu tymczasowego
   };
 
   const handleOpenSort = () => {
     filterSheetRef.current?.close();
     sortSheetRef.current?.expand();
+  };
+
+  const applyFilters = () => {
+    setSelectedProducers(filterSelectedProducers); // Aktualizuje stan producentów
+    filterSheetRef.current?.close();
   };
 
   const applySorting = () => {
@@ -119,26 +160,6 @@ const ResultScreen: React.FC = () => {
     sortSheetRef.current?.close();
   };
 
-  const renderCategoriesFilter = () => (
-    <>
-      <View style={styles.sheetHeader}>
-        <Text style={styles.sheetTitle}>Wybierz kategorię</Text>
-        <IconButton icon="arrow-left" onPress={() => setCurrentView("main")} size={24} />
-      </View>
-      <ScrollView>
-        {categories.map((category) => (
-          <View style={styles.checkboxContainer} key={category}>
-            <Checkbox
-              status={selectedCategories.includes(category) ? "checked" : "unchecked"}
-              onPress={() => handleCategoryToggle(category)}
-            />
-            <Text>{category}</Text>
-          </View>
-        ))}
-      </ScrollView>
-    </>
-  );
-
   const renderProducersFilter = () => (
     <>
       <View style={styles.sheetHeader}>
@@ -146,15 +167,19 @@ const ResultScreen: React.FC = () => {
         <IconButton icon="arrow-left" onPress={() => setCurrentView("main")} size={24} />
       </View>
       <ScrollView>
-        {producers.map((producer) => (
-          <View style={styles.checkboxContainer} key={producer}>
-            <Checkbox
-              status={selectedProducers.includes(producer) ? "checked" : "unchecked"}
-              onPress={() => handleProducerToggle(producer)}
-            />
-            <Text>{producer}</Text>
-          </View>
-        ))}
+        {producers.map((producer) => {
+          const isDisabled = categoryIds.includes("1") && producer === "G4M3R"; // Zakładam, że "G4M3R" to wymagany producent dla kategorii o ID 1
+          return (
+            <View style={styles.checkboxContainer} key={producer}>
+              <Checkbox
+                status={filterSelectedProducers.includes(producer) ? "checked" : "unchecked"}
+                onPress={() => handleProducerToggle(producer)}
+                disabled={isDisabled}
+              />
+              <Text style={{ color: isDisabled ? "gray" : "black" }}>{producer}</Text>
+            </View>
+          );
+        })}
       </ScrollView>
     </>
   );
@@ -185,15 +210,6 @@ const ResultScreen: React.FC = () => {
         />
       </View>
 
-      <Text style={styles.filterSubtitle}>Kategoria</Text>
-      <Button
-        mode="outlined"
-        style={styles.categoryButton}
-        onPress={() => setCurrentView("categories")}
-      >
-        Wybierz kategorię
-      </Button>
-
       <Text style={styles.filterSubtitle}>Producent</Text>
       <Button
         mode="outlined"
@@ -211,7 +227,7 @@ const ResultScreen: React.FC = () => {
         <Text>Ukryj niedostępne</Text>
       </View>
 
-      <Button mode="contained" onPress={() => filterSheetRef.current?.close()}>
+      <Button mode="contained" onPress={applyFilters}>
         Zastosuj
       </Button>
     </>
@@ -260,7 +276,6 @@ const ResultScreen: React.FC = () => {
       >
         <BottomSheetView style={styles.contentContainer}>
           {currentView === "main" && renderMainFilters()}
-          {currentView === "categories" && renderCategoriesFilter()}
           {currentView === "producers" && renderProducersFilter()}
         </BottomSheetView>
       </BottomSheet>
