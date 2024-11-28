@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, useColorScheme, Alert, TouchableOpacity, Text } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import ProfileZone from "@/components/ProfileZone";
 import Login from "@/components/Login";
-import { useAuth } from "@/context/AuthContext"; // Import useAuth
+import { useAuth } from "@/context/AuthContext";
 
 const ProfileScreen: React.FC = () => {
   const { isLoggedIn, user, logout } = useAuth(); // Use AuthContext
@@ -12,6 +12,12 @@ const ProfileScreen: React.FC = () => {
   const isDarkMode = colorScheme === "dark";
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
+
+  useEffect(() => {
+    if (isLoggedIn && user?.userType === "WORKER") {
+      router.push("/OrderManagementScreen");
+    }
+  }, [isLoggedIn, user, router]);
 
   const handleLogout = async () => {
     try {
@@ -34,7 +40,7 @@ const ProfileScreen: React.FC = () => {
           <ProfileZone user={user} onLogout={handleLogout} />
         </View>
       ) : (
-        <Login/>
+        <Login />
       )}
 
       {!isLoggedIn && (
