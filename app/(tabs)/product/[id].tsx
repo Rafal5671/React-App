@@ -38,7 +38,7 @@ const ProductScreen = () => {
   const fetchComments = async () => {
     try {
       setCommentsLoading(true);
-      const response = await fetch(`http:///192.168.100.9:8082/api/comments/product/${id}`);
+      const response = await fetch(`http:///192.168.100.8:8082/api/comments/product/${id}`);
       if (!response.ok) throw new Error("Failed to fetch comments");
       const data = await response.json();
       setComments(data);
@@ -53,7 +53,7 @@ const ProductScreen = () => {
     const fetchProductData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http:///192.168.100.9:8082/api/products/${id}`);
+        const response = await fetch(`http:///192.168.100.8:8082/api/products/${id}`);
         if (!response.ok) throw new Error("Product not found");
         const data = await response.json();
         setProduct(data);

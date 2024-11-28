@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TouchableOpacity, ScrollView,useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TouchableOpacity, ScrollView, useColorScheme } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
 import { Colors } from '@/constants/Colors';
+import Svg, { Path } from 'react-native-svg';
 
 interface Store {
   id: number;
@@ -16,19 +17,30 @@ interface ShopsDeliveryProps {
   onStoreSelect: (store: Store) => void;
 }
 
+// Definicja komponentu PinIcon
+const PinIcon = ({ color }) => (
+  <Svg width={40} height={40} viewBox="0 0 24 24">
+    <Path
+      fill={color}
+      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"
+    />
+  </Svg>
+);
+
 const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
+  const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
 
-  // Fetch shop data from the backend API
+  // Pobieranie danych sklepów z API
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch(`http:///192.168.100.9:8082/api/shop`);
+        const response = await fetch(`http://192.168.100.8:8082/api/shop`);
         const data = await response.json();
         setStores(data);
       } catch (error) {
@@ -47,7 +59,8 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
 
   const handleSelectStore = () => {
     if (selectedStore) {
-      onStoreSelect(selectedStore);
+      setSelectedStoreId(selectedStore.id); // Aktualizuj ID wybranego sklepu
+      onStoreSelect(selectedStore); // Przekaż wybrany sklep do nadrzędnego komponentu
     }
   };
 
@@ -66,22 +79,26 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
               longitudeDelta: 5,
             }}
           >
-            {stores.map((store) => (
-              <Marker
-                key={store.id}
-                coordinate={{ latitude: store.latitude, longitude: store.longitude }}
-                onPress={() => handleStorePress(store)}
-              >
-                <Callout>
-                  <View style={styles.calloutContainer}>
-                    <Text style={styles.calloutTitle}>{store.street}</Text>
-                    <Text style={styles.calloutText}>
-                      {store.city}, {store.postalCode}
-                    </Text>
-                  </View>
-                </Callout>
-              </Marker>
-            ))}
+            {stores.map((store) => {
+              const isSelected = store.id === selectedStoreId;
+              return (
+                <Marker
+                  key={store.id}
+                  coordinate={{ latitude: store.latitude, longitude: store.longitude }}
+                  onPress={() => handleStorePress(store)}
+                >
+                  <PinIcon color={isSelected ? 'blue' : 'red'} />
+                  <Callout>
+                    <View style={styles.calloutContainer}>
+                      <Text style={styles.calloutTitle}>{store.street}</Text>
+                      <Text style={styles.calloutText}>
+                        {store.city}, {store.postalCode}
+                      </Text>
+                    </View>
+                  </Callout>
+                </Marker>
+              );
+            })}
           </MapView>
 
           {selectedStore && (
@@ -94,7 +111,9 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
                 style={[styles.selectButton, { backgroundColor: themeColors.tint }]}
                 onPress={handleSelectStore}
               >
-                <Text style={[styles.selectButtonText, { color: themeColors.background }]}>Wybierz ten sklep</Text>
+                <Text style={[styles.selectButtonText, { color: themeColors.background }]}>
+                  Wybierz ten sklep
+                </Text>
               </TouchableOpacity>
             </View>
           )}
@@ -108,9 +127,9 @@ const styles = StyleSheet.create({
   mapContainer: {
     flex: 1,
   },
-   scrollContent: {
-      flexGrow: 1,
-    },
+  scrollContent: {
+    flexGrow: 1,
+  },
   map: {
     width: '100%',
     height: Dimensions.get('window').height / 2,
