@@ -33,7 +33,7 @@ const ResultScreen: React.FC = () => {
 
   // Function to fetch producers from the backend
   const fetchProducers = async () => {
-    let url = `http://192.168.100.8:8082/api/products/producers?`;
+    let url = `http://192.168.100.9:8082/api/products/producers?`;
 
     if (categoryIds) {
       const ids = categoryIds.split(",");
@@ -61,7 +61,7 @@ const ResultScreen: React.FC = () => {
 
   // Function to fetch products from the backend
   const fetchProducts = async () => {
-    let url = `http://192.168.100.8:8082/api/products/filter?`;
+    let url = `http://192.168.100.9:8082/api/products/filter?`;
 
     if (categoryIds) {
       const ids = categoryIds.split(",");

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TouchableOpacity, ScrollView, useColorScheme } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions, TouchableOpacity, ScrollView, useColorScheme, Alert } from 'react-native';
 import MapView, { Marker, Callout } from 'react-native-maps';
+import * as Location from 'expo-location';
 import { Colors } from '@/constants/Colors';
 import Svg, { Path } from 'react-native-svg';
 
@@ -32,15 +33,42 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [selectedStoreId, setSelectedStoreId] = useState<number | null>(null);
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
+
+  useEffect(() => {
+    const getLocation = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        console.log('Permission status:', status);
+        if (status !== 'granted') {
+          Alert.alert('Permission denied', 'Unable to access location. Using default location.');
+          setLocation({ latitude: 52.2297, longitude: 21.0122 });
+          return;
+        }
+
+        const userLocation = await Location.getCurrentPositionAsync({});
+        console.log('User location:', userLocation);
+        setLocation({
+          latitude: userLocation.coords.latitude,
+          longitude: userLocation.coords.longitude,
+        });
+      } catch (error) {
+        console.error('Error fetching location:', error);
+        setLocation({ latitude: 52.2297, longitude: 21.0122 });
+      }
+    };
+
+    getLocation();
+  }, []);
 
   // Pobieranie danych sklepów z API
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch(`http://192.168.100.8:8082/api/shop`);
+        const response = await fetch(`http://192.168.100.9:8082/api/shop`);
         const data = await response.json();
         setStores(data);
       } catch (error) {
@@ -64,6 +92,15 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
     }
   };
 
+  if (!location) {
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color={themeColors.tint} />
+        <Text style={{ color: themeColors.text }}>Pobieranie lokalizacji...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.mapContainer}>
       {loading ? (
@@ -72,12 +109,12 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <MapView
             style={styles.map}
-            initialRegion={{
-              latitude: 52.2297,
-              longitude: 21.0122,
-              latitudeDelta: 5,
-              longitudeDelta: 5,
-            }}
+             region={{
+               latitude: location.latitude,
+               longitude: location.longitude,
+               latitudeDelta: 0.05,
+               longitudeDelta: 0.05,
+             }}
           >
             {stores.map((store) => {
               const isSelected = store.id === selectedStoreId;
@@ -126,6 +163,11 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
 const styles = StyleSheet.create({
   mapContainer: {
     flex: 1,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   scrollContent: {
     flexGrow: 1,
