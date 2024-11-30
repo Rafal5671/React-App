@@ -1,29 +1,47 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { FlatList, StyleSheet, View, Text, ScrollView } from "react-native";
-import { Appbar, Button, IconButton, TextInput, Checkbox, RadioButton } from "react-native-paper";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import {
+  Appbar,
+  Button,
+  IconButton,
+  TextInput,
+  Checkbox,
+  RadioButton,
+} from "react-native-paper";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import SearchProductCard from "@/components/SearchProductCard";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { Product } from "@/types/Product";
-import { useLocalSearchParams } from "expo-router";
 
 const ResultScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [sortedProducts, setSortedProducts] = useState<Product[]>([]);
   const [producers, setProducers] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<{ min: number | null; max: number | null }>({ min: null, max: null });
+  const [priceRange, setPriceRange] = useState<{
+    min: number | null;
+    max: number | null;
+  }>({ min: null, max: null });
   const [hideUnavailable, setHideUnavailable] = useState<boolean>(false);
-  const [filterSelectedProducers, setFilterSelectedProducers] = useState<string[]>([]);
-  const [selectedSort, setSelectedSort] = useState<string>("Ocena klientów: od najlepszej");
-  const [currentView, setCurrentView] = useState<"main" | "categories" | "producers">("main");
-
+  const [filterSelectedProducers, setFilterSelectedProducers] = useState<
+    string[]
+  >([]);
+  const [selectedSort, setSelectedSort] = useState<string>(
+    "Ocena klientów: od najlepszej"
+  );
+  const [currentView, setCurrentView] = useState<
+    "main" | "categories" | "producers"
+  >("main");
+  const router = useRouter();
   const searchParams = useLocalSearchParams();
   const categoryIds = searchParams.categoryIds || "";
   const searchQuery = searchParams.searchQuery || "";
   const producerParam = searchParams.producer || "";
   const shouldIncludeG4M3R = searchParams.shouldIncludeG4M3R === "true"; // Extract and convert to boolean
 
-  const [selectedProducers, setSelectedProducers] = useState<string[]>(producerParam ? [producerParam] : []);
+  const [selectedProducers, setSelectedProducers] = useState<string[]>(
+    producerParam ? [producerParam] : []
+  );
 
   console.log({ categoryIds, searchQuery, producerParam, shouldIncludeG4M3R });
 
@@ -37,7 +55,7 @@ const ResultScreen: React.FC = () => {
 
     if (categoryIds) {
       const ids = categoryIds.split(",");
-      ids.forEach(id => {
+      ids.forEach((id) => {
         url += `categoryIds=${id}&`;
       });
     }
@@ -49,8 +67,8 @@ const ResultScreen: React.FC = () => {
 
     try {
       const response = await fetch(url, {
-        method: 'GET',
-        credentials: 'include',
+        method: "GET",
+        credentials: "include",
       });
       const data = await response.json();
       setProducers(data);
@@ -65,12 +83,12 @@ const ResultScreen: React.FC = () => {
 
     if (categoryIds) {
       const ids = categoryIds.split(",");
-      ids.forEach(id => {
+      ids.forEach((id) => {
         url += `categoryIds=${id}&`;
       });
     }
     if (selectedProducers.length > 0) {
-      selectedProducers.forEach(producer => {
+      selectedProducers.forEach((producer) => {
         url += `producers=${encodeURIComponent(producer)}&`;
       });
     }
@@ -101,8 +119,8 @@ const ResultScreen: React.FC = () => {
   useEffect(() => {
     // Initialize selected producers based on navigation params
     if (shouldIncludeG4M3R) {
-      setSelectedProducers(['G4M3R']);
-      setFilterSelectedProducers(['G4M3R']);
+      setSelectedProducers(["G4M3R"]);
+      setFilterSelectedProducers(["G4M3R"]);
     } else {
       setSelectedProducers(producerParam ? [producerParam] : []);
       setFilterSelectedProducers(producerParam ? [producerParam] : []);
@@ -125,7 +143,9 @@ const ResultScreen: React.FC = () => {
 
   const handleProducerToggle = (producer: string) => {
     if (filterSelectedProducers.includes(producer)) {
-      setFilterSelectedProducers(filterSelectedProducers.filter((p) => p !== producer));
+      setFilterSelectedProducers(
+        filterSelectedProducers.filter((p) => p !== producer)
+      );
     } else {
       setFilterSelectedProducers([...filterSelectedProducers, producer]);
     }
@@ -188,16 +208,17 @@ const ResultScreen: React.FC = () => {
     <>
       <View style={styles.sheetHeader}>
         <Text style={styles.sheetTitle}>Wybierz producenta</Text>
-        <IconButton icon="arrow-left" onPress={() => setCurrentView("main")} size={24} />
+        <IconButton
+          icon="arrow-left"
+          onPress={() => setCurrentView("main")}
+          size={24}
+        />
       </View>
       <ScrollView>
         {shouldIncludeG4M3R ? (
           // Only display G4M3R, disabled and checked
           <View style={styles.checkboxContainer} key="G4M3R">
-            <Checkbox
-              status="checked"
-              disabled={true}
-            />
+            <Checkbox status="checked" disabled={true} />
             <Text style={{ color: "gray" }}>G4M3R</Text>
           </View>
         ) : (
@@ -205,7 +226,11 @@ const ResultScreen: React.FC = () => {
           producers.map((producer) => (
             <View style={styles.checkboxContainer} key={producer}>
               <Checkbox
-                status={filterSelectedProducers.includes(producer) ? "checked" : "unchecked"}
+                status={
+                  filterSelectedProducers.includes(producer)
+                    ? "checked"
+                    : "unchecked"
+                }
                 onPress={() => handleProducerToggle(producer)}
               />
               <Text>{producer}</Text>
@@ -220,45 +245,55 @@ const ResultScreen: React.FC = () => {
     <>
       <View style={styles.sheetHeader}>
         <Text style={styles.sheetTitle}>Filtry</Text>
-        <IconButton icon="close" onPress={() => filterSheetRef.current?.close()} size={24} />
+        <IconButton
+          icon="close"
+          onPress={() => filterSheetRef.current?.close()}
+          size={24}
+        />
       </View>
 
       <Text style={styles.filterSubtitle}>Cena</Text>
       <View style={styles.priceRange}>
         <TextInput
           label="Min"
-          value={priceRange.min !== null ? String(priceRange.min) : ''}
+          value={priceRange.min !== null ? String(priceRange.min) : ""}
           keyboardType="numeric"
           onChangeText={(text) =>
-            setPriceRange({ ...priceRange, min: text !== '' ? Number(text) : null })
+            setPriceRange({
+              ...priceRange,
+              min: text !== "" ? Number(text) : null,
+            })
           }
           style={styles.input}
         />
         <Text style={styles.toText}>-</Text>
         <TextInput
           label="Max"
-          value={priceRange.max !== null ? String(priceRange.max) : ''}
+          value={priceRange.max !== null ? String(priceRange.max) : ""}
           keyboardType="numeric"
           onChangeText={(text) =>
-            setPriceRange({ ...priceRange, max: text !== '' ? Number(text) : null })
+            setPriceRange({
+              ...priceRange,
+              max: text !== "" ? Number(text) : null,
+            })
           }
           style={styles.input}
         />
       </View>
 
-       {/* Hide the "Wybierz producenta" button when shouldIncludeG4M3R is true */}
-       {!shouldIncludeG4M3R && (
-         <>
-           <Text style={styles.filterSubtitle}>Producent</Text>
-           <Button
-             mode="outlined"
-             style={styles.categoryButton}
-             onPress={() => setCurrentView("producers")}
-           >
-             Wybierz producenta
-           </Button>
-         </>
-       )}
+      {/* Hide the "Wybierz producenta" button when shouldIncludeG4M3R is true */}
+      {!shouldIncludeG4M3R && (
+        <>
+          <Text style={styles.filterSubtitle}>Producent</Text>
+          <Button
+            mode="outlined"
+            style={styles.categoryButton}
+            onPress={() => setCurrentView("producers")}
+          >
+            Wybierz producenta
+          </Button>
+        </>
+      )}
 
       <View style={styles.checkboxContainer}>
         <Checkbox
@@ -277,7 +312,18 @@ const ResultScreen: React.FC = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Appbar.Header style={styles.appbarHeader}>
+        <Appbar.BackAction
+          onPress={() => {
+            const sourceScreen = searchParams.sourceScreen || "home"; // Default to "home" if not provided
+            if (sourceScreen === "search") {
+              router.push("/(tabs)/search");
+            } else {
+              router.push("/"); // Navigate back to the homepage
+            }
+          }}
+        />
         <Appbar.Content title="Wyniki wyszukiwania" />
+
         <View style={styles.buttonsContainer}>
           <Button
             mode="outlined"
@@ -311,7 +357,7 @@ const ResultScreen: React.FC = () => {
       <BottomSheet
         ref={filterSheetRef}
         index={-1}
-        snapPoints={['80%']}
+        snapPoints={["80%"]}
         enablePanDownToClose={true}
         onChange={handleSheetChanges}
       >
@@ -325,23 +371,36 @@ const ResultScreen: React.FC = () => {
       <BottomSheet
         ref={sortSheetRef}
         index={-1}
-        snapPoints={['45%']}
+        snapPoints={["45%"]}
         enablePanDownToClose={true}
         onChange={handleSheetChanges}
       >
         <BottomSheetView style={styles.contentContainer}>
           <View style={styles.sheetHeader}>
             <Text style={styles.sheetTitle}>Sortowanie</Text>
-            <IconButton icon="close" onPress={() => sortSheetRef.current?.close()} size={24} />
+            <IconButton
+              icon="close"
+              onPress={() => sortSheetRef.current?.close()}
+              size={24}
+            />
           </View>
 
           <RadioButton.Group
             onValueChange={(value) => setSelectedSort(value)}
             value={selectedSort}
           >
-            <RadioButton.Item label="Ocena klientów: od najlepszej" value="Ocena klientów: od najlepszej" />
-            <RadioButton.Item label="Cena: od najtańszych" value="Cena: od najtańszych" />
-            <RadioButton.Item label="Cena: od najdroższych" value="Cena: od najdroższych" />
+            <RadioButton.Item
+              label="Ocena klientów: od najlepszej"
+              value="Ocena klientów: od najlepszej"
+            />
+            <RadioButton.Item
+              label="Cena: od najtańszych"
+              value="Cena: od najtańszych"
+            />
+            <RadioButton.Item
+              label="Cena: od najdroższych"
+              value="Cena: od najdroższych"
+            />
           </RadioButton.Group>
 
           <Button mode="contained" onPress={handleApplySort}>
@@ -355,20 +414,33 @@ const ResultScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  appbarHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  appbarHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   buttonsContainer: { flexDirection: "row", marginLeft: "auto" },
   filterButton: { marginHorizontal: 5, width: 90 },
   sortButton: { marginHorizontal: 5, width: 90 },
   productList: { padding: 10 },
   contentContainer: { padding: 20 },
   sheetHeader: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
-  sheetTitle: { fontSize: 18, fontWeight: "bold", flex: 1, textAlign: "center" },
+  sheetTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    flex: 1,
+    textAlign: "center",
+  },
   filterSubtitle: { fontSize: 16, fontWeight: "bold", marginVertical: 10 },
   priceRange: { flexDirection: "row", alignItems: "center", marginBottom: 10 },
   input: { flex: 1, marginHorizontal: 5 },
   toText: { fontSize: 16 },
   categoryButton: { width: "100%", marginBottom: 10 },
-  checkboxContainer: { flexDirection: "row", alignItems: "center", marginVertical: 5 },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 5,
+  },
 });
 
 export default ResultScreen;
