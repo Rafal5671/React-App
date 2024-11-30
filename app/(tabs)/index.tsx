@@ -62,10 +62,6 @@ export default function HomeScreen() {
       contentContainerStyle={[styles.container, { backgroundColor: themeColors.background }]}
     >
       <View style={styles.header}>
-      <Button
-      title="Przejdź na /nazwa"
-      onPress={() =>  router.push("/OrderManagementScreen")}
-    />
         <Text style={[styles.greeting, { color: themeColors.text }]}>Dzień dobry</Text>
         <View style={[styles.searchContainer, { backgroundColor: themeColors.background }]}>
         <Icon source="magnify" size={20} color={themeColors.icon} />
