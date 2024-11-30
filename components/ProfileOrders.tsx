@@ -29,7 +29,7 @@ const ProfileOrders: React.FC<ProfileOrdersProps> = ({ userEmail, onBack }) => {
       setLoadingOrders(true);
       try {
         const response = await fetch(
-          `http:///192.168.100.9:8082/api/order/user/${userEmail}`
+          `http:///192.168.1.101:8082/api/order/user/${userEmail}`
         );
         if (!response.ok) throw new Error("Failed to fetch orders");
         const data = await response.json();

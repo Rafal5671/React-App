@@ -9,7 +9,7 @@ const OrderManagementScreen = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://192.168.100.9:8082/api/order/all'); // Zmień URL na odpowiedni
+        const response = await fetch('http://192.168.1.101:8082/api/order/all'); // Zmień URL na odpowiedni
         if (!response.ok) {
           throw new Error('Nie udało się załadować zamówień');
         }
@@ -30,7 +30,7 @@ const OrderManagementScreen = () => {
   // Update order status
   const updateOrderStatus = async (id, newState) => {
     try {
-      const response = await fetch(`http://192.168.100.9:8082/api/order/update/${id}`, {
+      const response = await fetch(`http://192.168.1.101:8082/api/order/update/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

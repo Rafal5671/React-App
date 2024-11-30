@@ -27,7 +27,7 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
     const fetchUserOpinion = async () => {
       try {
         const response = await fetch(
-          `http:///192.168.100.9:8082/api/comments/product/${productId}`
+          `http:///192.168.1.101:8082/api/comments/product/${productId}`
         );
         if (!response.ok) throw new Error("Failed to fetch comments");
         const data = await response.json();
@@ -62,8 +62,8 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
 
     try {
       const url = isEditing
-        ? `http:///192.168.100.9:8082/api/comments/${existingOpinion.id}` // Endpoint for editing
-        : "http:///192.168.100.9:8082/api/comments"; // Endpoint for creating
+        ? `http:///192.168.1.101:8082/api/comments/${existingOpinion.id}` // Endpoint for editing
+        : "http:///192.168.1.101:8082/api/comments"; // Endpoint for creating
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -90,7 +90,7 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
 
       // Refresh the user opinion after saving
       const updatedOpinionResponse = await fetch(
-        `http:///192.168.100.9:8082/api/comments/product/${productId}`
+        `http:///192.168.1.101:8082/api/comments/product/${productId}`
       );
       if (!updatedOpinionResponse.ok) throw new Error("Failed to fetch updated comment");
       const updatedData = await updatedOpinionResponse.json();

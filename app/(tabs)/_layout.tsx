@@ -78,10 +78,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="result"
         options={{
-          title: 'WYNIKI',
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name="search" size={28} color={color} />
-          ),
+          href:null,
         }}
       />
       <Tabs.Screen
