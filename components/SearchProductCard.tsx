@@ -57,7 +57,7 @@ const SearchProductCard: React.FC<ProductCardProps> = ({ product }) => {
     };
 
     const handlePress = () => {
-
+        router.push(`/product/${product.id}`);
     };
 
     return (

@@ -80,6 +80,7 @@ export default function SearchScreen() {
                     params: {
                       searchQuery: searchQuery.trim(),
                       shouldIncludeG4M3R: "false",
+                      sourceScreen: "search",
                     },
                   });
                 }
@@ -126,22 +127,6 @@ export default function SearchScreen() {
             />
           </View>
         ))}
-        <View
-          style={[
-            styles.listItemContainer,
-            { backgroundColor: themeColors.background },
-          ]}
-        >
-          <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
-            <List.Item
-              title="Promocje"
-              titleStyle={[styles.promoTitle, { color: themeColors.tint }]}
-              right={() => (
-                <List.Icon icon="chevron-right" color={themeColors.icon} />
-              )}
-            />
-          </TouchableOpacity>
-        </View>
       </View>
     </ScrollView>
   );
