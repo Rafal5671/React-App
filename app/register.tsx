@@ -48,7 +48,7 @@ const RegisterScreen: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`http:///192.168.1.101:8082/api/register`, { // Replace with your backend IP
+      const response = await fetch(`http:///192.168.100.9:8082/api/register`, { // Replace with your backend IP
         method: "POST",
         headers: {
           "Content-Type": "application/json",
