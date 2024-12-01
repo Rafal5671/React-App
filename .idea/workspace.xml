@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of worker">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
+=======
+>>>>>>> 41f5fc1 (connection of order issue and product quantity to database)
       <change beforePath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/result.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/result.tsx" afterDir="false" />
@@ -14,11 +17,20 @@
       <change beforePath="$PROJECT_DIR$/app/delivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/delivery.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.tsx" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProfileComments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileComments.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProfileOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileOrders.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ShopsDelivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ShopsDelivery.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/components/Opinion.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Opinion.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProfileComments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileComments.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProfileOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileOrders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+>>>>>>> 41f5fc1 (connection of order issue and product quantity to database)
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +67,11 @@
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+<<<<<<< HEAD
     &quot;git-widget-placeholder&quot;: &quot;Fixes&quot;,
+=======
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+>>>>>>> 41f5fc1 (connection of order issue and product quantity to database)
     &quot;last_opened_file_path&quot;: &quot;C:/Users/rafal/Desktop/react native/ReactAPP&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
   }

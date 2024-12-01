@@ -1,5 +1,4 @@
-import { Picker } from "@react-native-picker/picker";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,49 +9,57 @@ import {
   Alert,
   Modal,
   TextInput,
+  ScrollView
 } from "react-native";
 import { Product } from "@/types/Product";
 import { Stack } from "expo-router";
 import { CONFIG } from "@/constants/config";
+import { Picker } from '@react-native-picker/picker';
 const issueTypes = [
-  { label: "Brak produktu", value: "ProductMissing" },
-  { label: "Uszkodzony produkt", value: "ProductDamaged" },
-  { label: "Błąd w danych zamówienia", value: "DataError" },
-  { label: "Inny", value: "Other" },
+  { label: 'Brak produktu', value: 'NO_PRODUCT' },
+  { label: 'Uszkodzony produkt', value: 'DAMAGED_PRODUCT' },
+  { label: 'Błąd w danych zamówienia', value: 'INCORRECT_DATA' },
+  { label: 'Inny', value: 'ANOTHER' },
 ];
 
 const OrderManagementScreen = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
-  const [selectedIssueType, setSelectedIssueType] = useState("");
-  const [customMessage, setCustomMessage] = useState("");
+  const [selectedIssueType, setSelectedIssueType] = useState('');
+  const [customMessage, setCustomMessage] = useState('');
   const [isMissingModalVisible, setMissingModalVisible] = useState(false);
-  const [selectedProductId, setSelectedProductId] = useState(null);
-  const [missingType, setMissingType] = useState(""); // 'ProductMissing' or 'LowStock'
-  const [products, setProducts] = useState<Product[]>([]);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [missingType, setMissingType] = useState('');
+  const [products, setProducts] = useState([]);
 
-  // Fetch all orders
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(`http://${CONFIG.serverIp}/api/order/all`); // Zmień URL na odpowiedni
         if (!response.ok) {
-          throw new Error("Nie udało się załadować zamówień");
+          throw new Error('Nie udało się załadować zamówień');
         }
         const data = await response.json();
-        setOrders(data);
+
+        // Sortowanie zamówień według daty
+        const sortedOrders = data.sort(
+          (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+        );
+        setOrders(sortedOrders);
       } catch (error) {
-        console.error("Error fetching orders:", error);
-        Alert.alert("Błąd", error.message);
+        console.error('Error fetching orders:', error);
+        Alert.alert('Błąd', error.message);
       } finally {
-        setLoading(false);
+        setLoadingOrders(false);
       }
     };
 
     fetchOrders();
   }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -60,20 +67,25 @@ const OrderManagementScreen = () => {
           `http:///${CONFIG.serverIp}/api/products/dto`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch products");
+          throw new Error('Nie udało się załadować produktów');
         }
         const data = await response.json();
-        setProducts(data);
+
+        // Sortowanie produktów według ID
+        const sortedProducts = data.sort((a, b) => a.id - b.id);
+        setProducts(sortedProducts);
       } catch (error) {
-        console.error("Error fetching products:", error);
-        alert("Failed to load products. Please check your network connection.");
+        console.error('Error fetching products:', error);
+        Alert.alert('Błąd', 'Nie udało się załadować produktów');
       } finally {
-        setLoading(false);
+        setLoadingProducts(false);
       }
     };
     fetchProducts();
   }, []);
-  // Update order status
+
+
+  // Aktualizacja statusu zamówienia
   const updateOrderStatus = async (id, newState) => {
     try {
       const response = await fetch(
@@ -88,74 +100,122 @@ const OrderManagementScreen = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Nie udało się zaktualizować statusu zamówienia");
+        throw new Error('Nie udało się zaktualizować statusu zamówienia');
       }
 
       const updatedOrder = await response.json();
 
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order.id === id
-            ? { ...order, state: newState, ...updatedOrder }
-            : order
+          order.id === id ? { ...order, state: newState, ...updatedOrder } : order
         )
       );
 
-      Alert.alert(
-        "Sukces",
-        `Zamówienie zostało zaktualizowane do stanu: ${newState}`
-      );
+      Alert.alert('Sukces', `Zamówienie zostało zaktualizowane do stanu: ${newState}`);
     } catch (error) {
-      console.error("Error updating order status:", error);
-      Alert.alert("Błąd", "Nie udało się zaktualizować statusu zamówienia");
+      console.error('Error updating order status:', error);
+      Alert.alert('Błąd', 'Nie udało się zaktualizować statusu zamówienia');
     }
   };
-  const reportMissingProduct = () => {
-    if (!selectedProductId || !missingType) {
-      Alert.alert("Błąd", "Wybierz produkt i typ braku.");
+
+  // Zgłaszanie braków produktów
+  const reportMissingProduct = async () => {
+    if (selectedProductIds.length === 0 || !missingType) {
+      Alert.alert('Błąd', 'Wybierz co najmniej jeden produkt i typ braku.');
       return;
     }
 
-    const missingDetails = {
-      productId: selectedProductId,
-      issueType: missingType,
-    };
+    let newQuantityState;
+    if (missingType === 'ProductMissing') {
+      newQuantityState = 'NONE';
+    } else if (missingType === 'LowStock') {
+      newQuantityState = 'FEW';
+    } else {
+      Alert.alert('Błąd', 'Nieprawidłowy typ braków.');
+      return;
+    }
 
-    console.log("Zgłoszono braki:", missingDetails);
-    Alert.alert("Zgłoszenie wysłane", "Dziękujemy za zgłoszenie braków.");
+    const productsToUpdate = selectedProductIds.map((productId) => ({
+      id: productId.toString(),
+      quantityType: newQuantityState,
+    }));
 
-    // Reset formularza
-    setSelectedProductId(null);
-    setMissingType("");
-    setMissingModalVisible(false);
+    try {
+      const response = await fetch('http://192.168.100.9:8082/api/products/quantity', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(productsToUpdate),
+      });
+
+      if (!response.ok) {
+        throw new Error('Nie udało się zaktualizować stanów produktów');
+      }
+
+      Alert.alert('Sukces', 'Stany produktów zostały zaktualizowane.');
+
+      // Reset formularza i stanu
+      setSelectedProductIds([]);
+      setMissingType('');
+      setMissingModalVisible(false);
+    } catch (error) {
+      console.error('Error updating product quantities:', error);
+      Alert.alert('Błąd', 'Nie udało się zaktualizować stanów produktów.');
+    }
   };
 
-  const reportIssue = () => {
+  // Zgłaszanie nieścisłości
+  const reportIssue = async () => {
     if (!selectedOrderId || !selectedIssueType) {
-      Alert.alert("Błąd", "Wybierz zamówienie i typ nieścisłości.");
+      Alert.alert('Błąd', 'Wybierz zamówienie i typ nieścisłości.');
       return;
     }
 
     if (!customMessage.trim()) {
-      Alert.alert("Błąd", "Opis nieścisłości jest wymagany.");
+      Alert.alert('Błąd', 'Opis nieścisłości jest wymagany.');
       return;
     }
 
-    const issueDetails = {
-      orderId: selectedOrderId,
-      issueType: selectedIssueType,
-      message: customMessage,
-    };
+    try {
+      const response = await fetch(
+        `http://192.168.100.9:8082/api/order/${selectedOrderId}/add-issue`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            orderIssueType: selectedIssueType,
+            description: customMessage.trim(),
+          }),
+        }
+      );
 
-    // Symulacja wysyłania zgłoszenia
-    console.log("Zgłoszono nieścisłość:", issueDetails);
-    Alert.alert("Zgłoszenie wysłane", "Dziękujemy za zgłoszenie nieścisłości.");
+      if (!response.ok) {
+        throw new Error('Nie udało się zaktualizować problemu w zamówieniu');
+      }
 
-    // Resetowanie formularza
-    setSelectedOrderId(null);
-    setSelectedIssueType("");
-    setCustomMessage("");
-    setModalVisible(false);
+      const updatedOrder = await response.json();
+
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === selectedOrderId ? updatedOrder : order
+        )
+      );
+
+      Alert.alert(
+        'Sukces',
+        `Problem dla zamówienia został zaktualizowany na: ${selectedIssueType}`
+      );
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error updating order issue:', error);
+      Alert.alert(
+        'Błąd',
+        'Nie udało się zaktualizować problemu w zamówieniu.'
+      );
+    }
   };
 
   const logout = () => {};
@@ -167,34 +227,31 @@ const OrderManagementScreen = () => {
         <Text style={styles.bold}>ID:</Text> {item.id}
       </Text>
       <Text style={styles.orderText}>
-        <Text style={styles.bold}>Data zamówienia:</Text>{" "}
-        {new Date(item.orderDate).toLocaleString()}
+        <Text style={styles.bold}>Data zamówienia:</Text> {new Date(item.orderDate).toLocaleString()}
       </Text>
       <Text style={styles.orderText}>
         <Text style={styles.bold}>Status:</Text> {item.state}
       </Text>
       <Text style={styles.orderText}>
-        <Text style={styles.bold}>Data wysyłki:</Text>{" "}
-        {item.shipDate
-          ? new Date(item.shipDate).toLocaleString()
-          : "Nie wysłano"}
+        <Text style={styles.bold}>Data wysyłki:</Text>{' '}
+        {item.shipDate ? new Date(item.shipDate).toLocaleString() : 'Nie wysłano'}
       </Text>
       <Text style={styles.orderText}>
         <Text style={styles.bold}>Typ dostawy:</Text> {item.deliveryType}
       </Text>
       <View style={styles.actions}>
-        {item.state === "PENDING" && (
+        {item.state === 'PENDING' && (
           <TouchableOpacity
             style={[styles.button, styles.confirmButton]}
-            onPress={() => updateOrderStatus(item.id, "CONFIRMED")}
+            onPress={() => updateOrderStatus(item.id, 'CONFIRMED')}
           >
             <Text style={styles.buttonText}>Potwierdź</Text>
           </TouchableOpacity>
         )}
-        {item.state === "CONFIRMED" && (
+        {item.state === 'CONFIRMED' && (
           <TouchableOpacity
             style={[styles.button, styles.shipButton]}
-            onPress={() => updateOrderStatus(item.id, "SHIPPED")}
+            onPress={() => updateOrderStatus(item.id, 'SHIPPED')}
           >
             <Text style={styles.buttonText}>Wyślij</Text>
           </TouchableOpacity>
@@ -203,10 +260,11 @@ const OrderManagementScreen = () => {
     </View>
   );
 
-  if (loading) {
+  if (loadingOrders) {
     return (
       <View style={styles.loader}>
         <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Ładowanie zamówień...</Text>
       </View>
     );
   }
@@ -217,17 +275,12 @@ const OrderManagementScreen = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Zarządzanie Zamówieniami</Text>
         <FlatList
-          data={orders.sort(
-            (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
-          )}
+          data={orders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate))}
           keyExtractor={(item) => item.id.toString()}
           renderItem={renderOrderItem}
           contentContainerStyle={styles.list}
         />
-        <TouchableOpacity
-          style={styles.floatingButton}
-          onPress={() => setModalVisible(true)}
-        >
+        <TouchableOpacity style={styles.floatingButton} onPress={() => setModalVisible(true)}>
           <Text style={styles.floatingButtonText}>Zgłoś nieścisłości</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -249,29 +302,25 @@ const OrderManagementScreen = () => {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Zgłoś Nieścisłość</Text>
 
-              {/* Wybór zamówienia */}
               <Text style={styles.modalLabel}>Wybierz zamówienie:</Text>
               <Picker
                 selectedValue={selectedOrderId}
                 onValueChange={(itemValue) => setSelectedOrderId(itemValue)}
                 style={styles.picker}
               >
+                <Picker.Item label="Wybierz zamówienie" value={null} />
                 {orders.map((order) => (
-                  <Picker.Item
-                    key={order.id}
-                    label={`Zamówienie ${order.id}`}
-                    value={order.id}
-                  />
+                  <Picker.Item key={order.id} label={`Zamówienie ${order.id}`} value={order.id} />
                 ))}
               </Picker>
 
-              {/* Typ nieścisłości */}
               <Text style={styles.modalLabel}>Typ nieścisłości:</Text>
               <Picker
                 selectedValue={selectedIssueType}
                 onValueChange={(itemValue) => setSelectedIssueType(itemValue)}
                 style={styles.picker}
               >
+                <Picker.Item label="Wybierz typ nieścisłości" value="" />
                 {issueTypes.map((issueType) => (
                   <Picker.Item
                     key={issueType.value}
@@ -281,7 +330,6 @@ const OrderManagementScreen = () => {
                 ))}
               </Picker>
 
-              {/* Dodatkowa wiadomość */}
               <Text style={styles.modalLabel}>Wiadomość:</Text>
               <TextInput
                 style={styles.textInput}
@@ -299,16 +347,15 @@ const OrderManagementScreen = () => {
                 >
                   <Text style={styles.buttonText}>Anuluj</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={reportIssue}
-                >
+                <TouchableOpacity style={styles.submitButton} onPress={reportIssue}>
                   <Text style={styles.buttonText}>Wyślij</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
         </Modal>
+
+        {/* Modal zgłaszania braków */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -319,47 +366,65 @@ const OrderManagementScreen = () => {
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Zgłoś Braki</Text>
 
-              {/* Wybór produktu */}
-              <Text style={styles.modalLabel}>Wybierz produkt:</Text>
-              <Picker
-                selectedValue={selectedProductId}
-                onValueChange={(itemValue) => setSelectedProductId(itemValue)}
-                style={styles.picker}
-              >
-                {products.map((product) => (
-                  <Picker.Item
-                    key={product.id}
-                    label={`[${product.id}] ${product.productName}`}
-                    value={product.id}
-                  />
-                ))}
-              </Picker>
+              {loadingProducts ? (
+                <View style={styles.loader}>
+                  <ActivityIndicator size="large" color="#0000ff" />
+                  <Text>Ładowanie produktów...</Text>
+                </View>
+              ) : (
+                <>
+                  <Text style={styles.modalLabel}>Wybierz produkty:</Text>
+                  <View style={styles.productListContainer}>
+                    <ScrollView style={{ maxHeight: 200 }}>
+                      {products.map((product) => (
+                        <TouchableOpacity
+                          key={product.id}
+                          style={[
+                            styles.productItem,
+                            selectedProductIds.includes(product.id) && styles.selectedProductItem,
+                          ]}
+                          onPress={() => {
+                            if (selectedProductIds.includes(product.id)) {
+                              setSelectedProductIds(
+                                selectedProductIds.filter((id) => id !== product.id)
+                              );
+                            } else {
+                              setSelectedProductIds([...selectedProductIds, product.id]);
+                            }
+                          }}
+                        >
+                          <Text style={styles.productLabel}>
+                            [{product.id}] {product.productName}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
 
-              {/* Typ braków */}
-              <Text style={styles.modalLabel}>Typ braków:</Text>
-              <Picker
-                selectedValue={missingType}
-                onValueChange={(itemValue) => setMissingType(itemValue)}
-                style={styles.picker}
-              >
-                <Picker.Item label="Brak produktu" value="ProductMissing" />
-                <Picker.Item label="Pozostało mało sztuk" value="LowStock" />
-              </Picker>
+                  <Text style={styles.modalLabel}>Typ braków:</Text>
+                  <Picker
+                    selectedValue={missingType}
+                    onValueChange={(itemValue) => setMissingType(itemValue)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Wybierz typ braków" value="" />
+                    <Picker.Item label="Brak produktu" value="ProductMissing" />
+                    <Picker.Item label="Pozostało mało sztuk" value="LowStock" />
+                  </Picker>
 
-              <View style={styles.modalActions}>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => setMissingModalVisible(false)}
-                >
-                  <Text style={styles.buttonText}>Anuluj</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.submitButton}
-                  onPress={reportMissingProduct}
-                >
-                  <Text style={styles.buttonText}>Wyślij</Text>
-                </TouchableOpacity>
-              </View>
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={styles.cancelButton}
+                      onPress={() => setMissingModalVisible(false)}
+                    >
+                      <Text style={styles.buttonText}>Anuluj</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.submitButton} onPress={reportMissingProduct}>
+                      <Text style={styles.buttonText}>Wyślij</Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              )}
             </View>
           </View>
         </Modal>
@@ -371,29 +436,29 @@ const OrderManagementScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: '#f9f9f9',
     padding: 10,
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: "center",
+    textAlign: 'center',
   },
   loader: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   list: {
     paddingBottom: 20,
   },
   orderCard: {
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderRadius: 8,
     padding: 15,
     marginBottom: 10,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
@@ -412,68 +477,68 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   bold: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 10,
   },
   button: {
     padding: 10,
     borderRadius: 8,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   confirmButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: '#4CAF50',
   },
   shipButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
   },
   buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
   },
   floatingButton: {
-    position: "absolute",
+    position: 'absolute',
     right: 20,
     bottom: 20,
-    backgroundColor: "#FF5722",
+    backgroundColor: '#FF5722',
     padding: 15,
     borderRadius: 50,
     elevation: 5,
   },
   secondaryFloatingButton: {
-    position: "absolute",
+    position: 'absolute',
     right: 20,
-    bottom: 90, // Dodaj odpowiednią wartość, aby przycisk był wyżej niż pierwszy
-    backgroundColor: "#FFC107",
+    bottom: 90,
+    backgroundColor: '#FFC107',
     padding: 15,
     borderRadius: 50,
     elevation: 5,
   },
   floatingButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: "90%",
-    backgroundColor: "#fff",
+    width: '90%',
+    backgroundColor: '#fff',
     borderRadius: 8,
     padding: 20,
     elevation: 10,
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
   },
   modalLabel: {
@@ -483,37 +548,50 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
     marginBottom: 10,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
-    textAlignVertical: "top",
+    textAlignVertical: 'top',
   },
   modalActions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   cancelButton: {
-    backgroundColor: "#d9534f",
+    backgroundColor: '#d9534f',
     padding: 10,
     borderRadius: 8,
     flex: 1,
     marginRight: 5,
-    alignItems: "center",
+    alignItems: 'center',
   },
   submitButton: {
-    backgroundColor: "#5cb85c",
+    backgroundColor: '#5cb85c',
     padding: 10,
     borderRadius: 8,
     flex: 1,
     marginLeft: 5,
-    alignItems: "center",
+    alignItems: 'center',
+  },
+  productListContainer: {
+    marginBottom: 10,
+  },
+  productItem: {
+    padding: 10,
+    borderRadius: 5,
+  },
+  selectedProductItem: {
+    backgroundColor: '#e0e0e0',
+  },
+  productLabel: {
+    fontSize: 16,
   },
 });
 
