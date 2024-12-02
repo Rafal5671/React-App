@@ -4,7 +4,7 @@ import { Button, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext"; // Assume AuthContext is available
 import { Colors } from "@/constants/Colors";
-
+import {CONFIG} from "@/constants/config";
 interface OpinionProps {
   productId: string;
   onOpinionAdded: () => void; // Function to refresh the comment list
@@ -27,7 +27,7 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
     const fetchUserOpinion = async () => {
       try {
         const response = await fetch(
-          `http:///192.168.100.9:8082/api/comments/product/${productId}`
+          `http:///${CONFIG.serverIp}/api/comments/product/${productId}`
         );
         if (!response.ok) throw new Error("Failed to fetch comments");
         const data = await response.json();
@@ -62,8 +62,8 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
 
     try {
       const url = isEditing
-        ? `http:///192.168.100.9:8082/api/comments/${existingOpinion.id}` // Endpoint for editing
-        : "http:///192.168.100.9:8082/api/comments"; // Endpoint for creating
+        ? `http:///${CONFIG.serverIp}/api/comments/${existingOpinion.id}` // Endpoint for editing
+        : `http:///${CONFIG.serverIp}/api/comments`; // Endpoint for creating
       const method = isEditing ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -90,7 +90,7 @@ const Opinion: React.FC<OpinionProps> = ({ productId, onOpinionAdded }) => {
 
       // Refresh the user opinion after saving
       const updatedOpinionResponse = await fetch(
-        `http:///192.168.100.9:8082/api/comments/product/${productId}`
+        `http:///${CONFIG.serverIp}/api/comments/product/${productId}`
       );
       if (!updatedOpinionResponse.ok) throw new Error("Failed to fetch updated comment");
       const updatedData = await updatedOpinionResponse.json();
