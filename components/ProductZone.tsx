@@ -10,7 +10,7 @@ import {
 import { Product } from "@/types/Product";
 import { Colors } from "@/constants/Colors";
 import ProductCard from "./ProductCard";
-
+import {CONFIG} from "@/constants/config";
 const ProductZone: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
@@ -21,7 +21,7 @@ const ProductZone: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http:///192.168.1.101:8082/api/products/dto`);
+        const response = await fetch(`http:///${CONFIG.serverIp}/api/products/dto`);
         if (!response.ok) {
           throw new Error("Failed to fetch products");
         }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, useColorScheme, TextInput, Alert } from "react-native";
 import { useAuth } from "@/context/AuthContext";
 import { Colors } from "@/constants/Colors";
+import {CONFIG} from "@/constants/config";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -13,7 +14,7 @@ const Login: React.FC = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`http:///192.168.1.101:8082/api/login`, {
+      const response = await fetch(`http:///${CONFIG.serverIp}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

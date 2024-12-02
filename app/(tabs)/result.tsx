@@ -13,6 +13,7 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import SearchProductCard from "@/components/SearchProductCard";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Product } from "@/types/Product";
+import {CONFIG} from "@/constants/config";
 
 const ResultScreen: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -51,7 +52,7 @@ const ResultScreen: React.FC = () => {
 
   // Function to fetch producers from the backend
   const fetchProducers = async () => {
-    let url = `http://192.168.1.101:8082/api/products/producers?`;
+    let url = `http://${CONFIG.serverIp}/api/products/producers?`;
 
     if (categoryIds) {
       const ids = categoryIds.split(",");
@@ -79,7 +80,7 @@ const ResultScreen: React.FC = () => {
 
   // Function to fetch products from the backend
   const fetchProducts = async () => {
-    let url = `http://192.168.1.101:8082/api/products/filter?`;
+    let url = `http://${CONFIG.serverIp}/api/products/filter?`;
 
     if (categoryIds) {
       const ids = categoryIds.split(",");

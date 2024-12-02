@@ -7,6 +7,7 @@ import DeliveryAddress from '@/components/DeliveryAddress';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useStripe } from '@stripe/stripe-react-native';
+import {CONFIG} from "@/constants/config";
 
 interface Store {
   id: number;
@@ -79,7 +80,7 @@ const DeliveryScreen: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`http:///192.168.1.101:8082/api/order`, {
+      const response = await fetch(`http:///${CONFIG.serverIp}/api/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(orderDetails)
@@ -93,14 +94,14 @@ const DeliveryScreen: React.FC = () => {
       clearCart();
 
       // Fetch the new basket ID
-      const basketResponse = await fetch(`http:///192.168.1.101:8082/api/basket/user/${user.id}`);
+      const basketResponse = await fetch(`http:///${CONFIG.serverIp}/api/basket/user/${user.id}`);
       const newBasket = await basketResponse.json();
 
       if (newBasket && newBasket.id) {
         updateBasketId(newBasket.id);
       }
 
-      const paymentResponse = await fetch(`http:///192.168.1.101:8082/api/payment/create-payment-intent`, {
+      const paymentResponse = await fetch(`http:///${CONFIG.serverIp}/api/payment/create-payment-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: basketTotalPrice * 100, currency: 'pln' }),

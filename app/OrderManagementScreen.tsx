@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { Product } from "@/types/Product";
 import { Stack } from "expo-router";
-
+import { CONFIG } from "@/constants/config";
 const issueTypes = [
   { label: "Brak produktu", value: "ProductMissing" },
   { label: "Uszkodzony produkt", value: "ProductDamaged" },
@@ -37,7 +37,7 @@ const OrderManagementScreen = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch("http://192.168.1.101:8082/api/order/all"); // Zmień URL na odpowiedni
+        const response = await fetch(`http://${CONFIG.serverIp}/api/order/all`); // Zmień URL na odpowiedni
         if (!response.ok) {
           throw new Error("Nie udało się załadować zamówień");
         }
@@ -57,7 +57,7 @@ const OrderManagementScreen = () => {
     const fetchProducts = async () => {
       try {
         const response = await fetch(
-          `http:///192.168.1.101:8082/api/products/dto`
+          `http:///${CONFIG.serverIp}/api/products/dto`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch products");
@@ -77,7 +77,7 @@ const OrderManagementScreen = () => {
   const updateOrderStatus = async (id, newState) => {
     try {
       const response = await fetch(
-        `http://192.168.1.101:8082/api/order/update/${id}`,
+        `http://${CONFIG.serverIp}/api/order/update/${id}`,
         {
           method: "PATCH",
           headers: {
@@ -158,7 +158,7 @@ const OrderManagementScreen = () => {
     setModalVisible(false);
   };
 
-  // Kod do zgłoszenia nieścisłości i modal pozostaje taki sam
+  const logout = () => {};
 
   // Render pojedyncze zamówienie
   const renderOrderItem = ({ item }) => (
@@ -236,7 +236,9 @@ const OrderManagementScreen = () => {
         >
           <Text style={styles.floatingButtonText}>Zgłoś braki</Text>
         </TouchableOpacity>
-
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Text style={styles.buttonText}>Wyloguj</Text>
+        </TouchableOpacity>
         <Modal
           animationType="slide"
           transparent={true}
@@ -399,6 +401,15 @@ const styles = StyleSheet.create({
   orderText: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  logoutButton: {
+    position: "absolute",
+    right: 20,
+    top: 40, // Ustaw przycisk w odpowiednim miejscu, np. w prawym górnym rogu
+    backgroundColor: "#d9534f",
+    padding: 15,
+    borderRadius: 50,
+    elevation: 5,
   },
   bold: {
     fontWeight: "bold",

@@ -5,6 +5,7 @@ import { useRouter } from "expo-router";
 import ProfileZone from "@/components/ProfileZone";
 import Login from "@/components/Login";
 import { useAuth } from "@/context/AuthContext";
+import {CONFIG} from "@/constants/config";
 
 const ProfileScreen: React.FC = () => {
   const { isLoggedIn, user, logout } = useAuth(); // Use AuthContext
@@ -15,13 +16,13 @@ const ProfileScreen: React.FC = () => {
 
   useEffect(() => {
     if (isLoggedIn && user?.userType === "WORKER") {
-      router.push("/OrderManagementScreen");
+      router.replace("/OrderManagementScreen");
     }
   }, [isLoggedIn, user, router]);
 
   const handleLogout = async () => {
     try {
-      await fetch(`http:///192.168.1.101:8082/api/logout`, {
+      await fetch(`http:///${CONFIG.serverIp}/api/logout`, {
         method: "GET",
         credentials: "include",
       });

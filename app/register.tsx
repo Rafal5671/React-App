@@ -10,6 +10,7 @@ import {
 import { Colors } from "@/constants/Colors";
 import { useRouter, Stack } from 'expo-router';
 import { Checkbox } from 'react-native-paper';
+import {CONFIG} from "@/constants/config"
 
 const RegisterScreen: React.FC = () => {
   const [firstName, setFirstName] = useState<string>("");
@@ -48,7 +49,7 @@ const RegisterScreen: React.FC = () => {
     };
 
     try {
-      const response = await fetch(`http:///192.168.1.101:8082/api/register`, { // Replace with your backend IP
+      const response = await fetch(`http:///${CONFIG.serverIp}/api/register`, { // Replace with your backend IP
         method: "POST",
         headers: {
           "Content-Type": "application/json",
