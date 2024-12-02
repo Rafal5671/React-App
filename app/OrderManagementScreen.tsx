@@ -15,6 +15,7 @@ import { Product } from "@/types/Product";
 import { Stack } from "expo-router";
 import { CONFIG } from "@/constants/config";
 import { Picker } from '@react-native-picker/picker';
+
 const issueTypes = [
   { label: 'Brak produktu', value: 'NO_PRODUCT' },
   { label: 'Uszkodzony produkt', value: 'DAMAGED_PRODUCT' },
@@ -98,7 +99,6 @@ const OrderManagementScreen = () => {
           body: JSON.stringify({ state: newState }),
         }
       );
-
       if (!response.ok) {
         throw new Error('Nie udało się zaktualizować statusu zamówienia');
       }
@@ -152,7 +152,6 @@ const OrderManagementScreen = () => {
       if (!response.ok) {
         throw new Error('Nie udało się zaktualizować stanów produktów');
       }
-
       Alert.alert('Sukces', 'Stany produktów zostały zaktualizowane.');
 
       // Reset formularza i stanu
@@ -204,6 +203,8 @@ const OrderManagementScreen = () => {
         )
       );
 
+  const logout = () => {};
+
       Alert.alert(
         'Sukces',
         `Problem dla zamówienia został zaktualizowany na: ${selectedIssueType}`
@@ -218,9 +219,7 @@ const OrderManagementScreen = () => {
     }
   };
 
-  const logout = () => {};
-
-  // Render pojedyncze zamówienie
+  // Renderowanie pojedynczego zamówienia
   const renderOrderItem = ({ item }) => (
     <View style={styles.orderCard}>
       <Text style={styles.orderText}>
