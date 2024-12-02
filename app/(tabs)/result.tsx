@@ -78,50 +78,6 @@ const ResultScreen: React.FC = () => {
     }
   };
 
-  const reportMissingProduct = async () => {
-    if (!selectedProductId || !missingType) {
-      Alert.alert("Błąd", "Wybierz produkt i typ braku.");
-      return;
-    }
-
-    try {
-      // Mapowanie missingType na odpowiedni stan produktu
-      let newQuantityState;
-      if (missingType === "ProductMissing") {
-        newQuantityState = "NONE";
-      } else if (missingType === "LowStock") {
-        newQuantityState = "FEW";
-      } else {
-        Alert.alert("Błąd", "Nieprawidłowy typ braków.");
-        return;
-      }
-
-      const response = await fetch(`http://192.168.100.9:8082/api/products/${selectedProductId}/quantity`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quantityType: newQuantityState }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Nie udało się zaktualizować stanu produktu");
-      }
-
-      Alert.alert("Sukces", "Stan produktu został zaktualizowany.");
-
-      // Reset formularza
-      setSelectedProductId(null);
-      setMissingType("");
-      setMissingModalVisible(false);
-
-      // Opcjonalnie, odśwież listę produktów, jeśli jest to konieczne
-    } catch (error) {
-      console.error("Error updating product quantity:", error);
-      Alert.alert("Błąd", "Nie udało się zaktualizować stanu produktu.");
-    }
-  };
-
   // Function to fetch products from the backend
   const fetchProducts = async () => {
     let url = `http://${CONFIG.serverIp}/api/products/filter?`;

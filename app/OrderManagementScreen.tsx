@@ -141,7 +141,7 @@ const OrderManagementScreen = () => {
     }));
 
     try {
-      const response = await fetch('http://192.168.100.9:8082/api/products/quantity', {
+      const response = await fetch(`http://${CONFIG.serverIp}/api/products/quantity`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ const OrderManagementScreen = () => {
 
     try {
       const response = await fetch(
-        `http://192.168.100.9:8082/api/order/${selectedOrderId}/add-issue`,
+        `http://${CONFIG.serverIp}/api/order/${selectedOrderId}/add-issue`,
         {
           method: 'PATCH',
           headers: {
