@@ -4,13 +4,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="fixing worker issues">
-      <change afterPath="$PROJECT_DIR$/components/AboutUs.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/Regulations.tsx" afterDir="false" />
+    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of terms and info">
+      <change afterPath="$PROJECT_DIR$/components/Terms.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/ProfileZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileZone.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +130,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733236536062</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="addition of terms and info">
+      <option name="closed" value="true" />
+      <created>1733252645807</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1733252645807</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -158,6 +163,7 @@
     <MESSAGE value="pin color" />
     <MESSAGE value="addition of worker" />
     <MESSAGE value="fixing worker issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixing worker issues" />
+    <MESSAGE value="addition of terms and info" />
+    <option name="LAST_COMMIT_MESSAGE" value="addition of terms and info" />
   </component>
 </project>
