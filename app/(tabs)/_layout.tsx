@@ -84,7 +84,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="product/[id]"
         options={{
-          href: null, // This prevents the tab from appearing in the tab bar
+          href: null,
         }}
       />
       

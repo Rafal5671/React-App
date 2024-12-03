@@ -9,8 +9,9 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { List, Icon, Divider } from "react-native-paper";
+import { List, Divider } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const categories = [
   {
@@ -65,7 +66,7 @@ export default function SearchScreen() {
             { backgroundColor: themeColors.background },
           ]}
         >
-          <Icon source="magnify" size={20} color={themeColors.icon} />
+          <MaterialCommunityIcons name="magnify" size={20} color={themeColors.icon} />
             <TextInput
               style={[styles.searchInput, { color: themeColors.text }]}
               placeholder="Wyszukaj produkty..."
