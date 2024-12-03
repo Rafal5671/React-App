@@ -97,7 +97,7 @@ const ResultScreen: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`http://192.168.100.9:8082/api/products/${selectedProductId}/quantity`, {
+      const response = await fetch(`http://${CONFIG.serverIp}/api/products/${selectedProductId}/quantity`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -395,7 +395,7 @@ const ResultScreen: React.FC = () => {
       <FlatList
         data={sortedProducts}
         renderItem={renderProductCard}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
         contentContainerStyle={styles.productList}
       />
 

@@ -15,6 +15,8 @@ import { Product } from "@/types/Product";
 import { Stack } from "expo-router";
 import { CONFIG } from "@/constants/config";
 import { Picker } from '@react-native-picker/picker';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from "expo-router";
 
 const issueTypes = [
   { label: 'Brak produktu', value: 'NO_PRODUCT' },
@@ -35,6 +37,8 @@ const OrderManagementScreen = () => {
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [missingType, setMissingType] = useState('');
   const [products, setProducts] = useState([]);
+  const { logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -85,6 +89,20 @@ const OrderManagementScreen = () => {
     fetchProducts();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await fetch(`http://${CONFIG.serverIp}/api/logout`, {
+        method: "GET",
+        credentials: "include",
+      });
+      logout(); // Use logout function from AuthContext
+      Alert.alert("Success", "Logged out successfully!");
+      router.replace("/profile"); // Redirect to ProfileScreen
+    } catch (error) {
+      console.error("Logout error:", error);
+      Alert.alert("Error", "Failed to log out.");
+    }
+  };
 
   // Aktualizacja statusu zamówienia
   const updateOrderStatus = async (id, newState) => {
@@ -165,59 +183,58 @@ const OrderManagementScreen = () => {
   };
 
   // Zgłaszanie nieścisłości
-  const reportIssue = async () => {
-    if (!selectedOrderId || !selectedIssueType) {
-      Alert.alert('Błąd', 'Wybierz zamówienie i typ nieścisłości.');
-      return;
-    }
+const reportIssue = async () => {
+  if (!selectedOrderId || !selectedIssueType) {
+    Alert.alert('Błąd', 'Wybierz zamówienie i typ nieścisłości.');
+    return;
+  }
 
-    if (!customMessage.trim()) {
-      Alert.alert('Błąd', 'Opis nieścisłości jest wymagany.');
-      return;
-    }
+  if (!customMessage.trim()) {
+    Alert.alert('Błąd', 'Opis nieścisłości jest wymagany.');
+    return;
+  }
 
-    try {
-      const response = await fetch(
-        `http://${CONFIG.serverIp}/api/order/${selectedOrderId}/add-issue`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            orderIssueType: selectedIssueType,
-            description: customMessage.trim(),
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Nie udało się zaktualizować problemu w zamówieniu');
+  try {
+    const response = await fetch(
+      `http://${CONFIG.serverIp}/api/order/${selectedOrderId}/add-issue`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          orderIssueType: selectedIssueType,
+          description: customMessage.trim(),
+        }),
       }
+    );
 
-      const updatedOrder = await response.json();
-
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.id === selectedOrderId ? updatedOrder : order
-        )
-      );
-
-  const logout = () => {};
-
-      Alert.alert(
-        'Sukces',
-        `Problem dla zamówienia został zaktualizowany na: ${selectedIssueType}`
-      );
-      setModalVisible(false);
-    } catch (error) {
-      console.error('Error updating order issue:', error);
-      Alert.alert(
-        'Błąd',
-        'Nie udało się zaktualizować problemu w zamówieniu.'
-      );
+    if (!response.ok) {
+      throw new Error('Nie udało się zaktualizować problemu w zamówieniu');
     }
-  };
+
+    const updatedOrder = await response.json();
+
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.id === selectedOrderId ? updatedOrder : order
+      )
+    );
+
+    Alert.alert(
+      'Sukces',
+      `Problem dla zamówienia został zaktualizowany na: ${selectedIssueType}`
+    );
+    setModalVisible(false);
+  } catch (error) {
+    console.error('Error updating order issue:', error);
+    Alert.alert(
+      'Błąd',
+      'Nie udało się zaktualizować problemu w zamówieniu.'
+    );
+  }
+};
+
 
   // Renderowanie pojedynczego zamówienia
   const renderOrderItem = ({ item }) => (
@@ -288,7 +305,7 @@ const OrderManagementScreen = () => {
         >
           <Text style={styles.floatingButtonText}>Zgłoś braki</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.buttonText}>Wyloguj</Text>
         </TouchableOpacity>
         <Modal

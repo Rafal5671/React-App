@@ -21,11 +21,6 @@ export default function RootLayout() {
   // Load fonts, including icon fonts
   const [fontsLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
-    // Load FontAwesome font
-    FontAwesome: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf"),
-    // Load MaterialIcons font
-    MaterialIcons: require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf"),
-    // Add other icon fonts if necessary
   });
 
   useEffect(() => {

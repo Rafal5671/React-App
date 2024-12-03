@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, useColorScheme, StyleSheet, TextInput, Button } from 'react-native';
 import { View, Text } from 'react-native';
-import { Icon } from 'react-native-paper';
 import ProductZone from '@/components/ProductZone';
 import CarouselSlider from '@/components/Slider';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const categories = [
   {
@@ -65,7 +65,7 @@ export default function HomeScreen() {
       <View style={styles.header}>
         <Text style={[styles.greeting, { color: themeColors.text }]}>Dzień dobry</Text>
         <View style={[styles.searchContainer, { backgroundColor: themeColors.background }]}>
-        <Icon source="magnify" size={20} color={themeColors.icon} />
+        <MaterialCommunityIcons name="magnify" size={20} color={themeColors.icon} />
             <TextInput
               style={[styles.searchInput, { color: themeColors.text }]}
               placeholder="Wyszukaj produkty..."
