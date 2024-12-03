@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   useColorScheme,
+  Alert,
 } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useRouter, Stack } from "expo-router";
-import { Checkbox, IconButton } from "react-native-paper";
+import { Checkbox } from "react-native-paper";
+import { z } from "zod";
 import { CONFIG } from "@/constants/config";
 import Terms from "@/components/Terms"; // Import Terms component
 
@@ -22,7 +24,7 @@ const RegisterScreen: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
   const [dataConsent, setDataConsent] = useState<boolean>(false);
-  const [currentView, setCurrentView] = useState<"register" | "terms">("register"); // Add this state
+  const [currentView, setCurrentView] = useState<"register" | "terms">("register");
   const colorScheme = useColorScheme();
   const router = useRouter();
 
@@ -30,63 +32,96 @@ const RegisterScreen: React.FC = () => {
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
 
   const handleRegister = async () => {
-    // Basic validation
-    if (password !== confirmPassword) {
-      alert("Hasła nie są zgodne!");
-      return;
-    }
+      const formData = {
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        password,
+        confirmPassword,
+        acceptTerms,
+        dataConsent,
+      };
 
-    if (!acceptTerms || !dataConsent) {
-      alert("Proszę zaakceptować regulamin i wyrazić zgodę na przetwarzanie danych.");
-      return;
-    }
+      try {
+        // Validate with Zod
+        registerSchema.parse(formData);
 
-    // Prepare user data
-    const userData = {
-      name: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phoneNumber,
-      password: password,
+        // Prepare user data for API
+        const userData = {
+          name: firstName,
+          lastName,
+          email,
+          phone: phoneNumber,
+          password,
+        };
+
+        const response = await fetch(`http://${CONFIG.serverIp}/api/register`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          Alert.alert("Sukces", "Rejestracja zakończona sukcesem!");
+          router.push("/profile");
+        } else {
+          Alert.alert("Błąd", data.message || "Wystąpił błąd podczas rejestracji.");
+        }
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          Alert.alert("Błąd walidacji", error.errors[0].message);
+        } else {
+          Alert.alert("Błąd", "Wystąpił problem podczas rejestracji.");
+        }
+      }
     };
 
-    try {
-      const response = await fetch(`http://${CONFIG.serverIp}/api/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // If the user is successfully registered, navigate to the profile screen
-        alert("Rejestracja zakończona sukcesem!");
-        router.push("/profile");
-      } else {
-        // If there's an error with the registration, show it
-        alert(data.message || "Wystąpił błąd podczas rejestracji.");
-      }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      alert("Wystąpił błąd. Spróbuj ponownie.");
+  // Zod Schema for Validation
+  const registerSchema = z
+  .object({
+    firstName: z.string().min(1, "Imię jest wymagane"),
+    lastName: z.string().min(1, "Nazwisko jest wymagane"),
+    email: z
+      .string()
+      .includes("@", { message: "Podaj poprawny adres email" }),
+    phoneNumber: z
+      .string()
+      .regex(/^\d{9}$/, "Numer telefonu musi mieć 9 cyfr"),
+    password: z.string().min(6, "Hasło musi mieć co najmniej 6 znaków"),
+    confirmPassword: z.string().min(1, "Potwierdzenie hasła jest wymagane"),
+    acceptTerms: z.literal(true, {
+      errorMap: () => ({ message: "Musisz zaakceptować regulamin" }),
+    }),
+    dataConsent: z.literal(true, {
+      errorMap: () => ({
+        message: "Musisz wyrazić zgodę na przetwarzanie danych",
+      }),
+    }),
+  })
+  .refine(
+    (data) => data.password === data.confirmPassword,
+    {
+      message: "Hasła nie są zgodne",
+      path: ["confirmPassword"],
     }
-  };
+  );
+
 
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       {currentView === "register" ? (
         <View style={[styles.container, { backgroundColor: themeColors.background }]}>
-          <Text style={[styles.title, { color: themeColors.text }]}>
-            Rejestracja
-          </Text>
+          <Text style={[styles.title, { color: themeColors.text }]}>Rejestracja</Text>
           <TextInput
             style={[
               styles.input,
-              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background },
             ]}
             placeholder="Imię"
             placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
@@ -96,7 +131,7 @@ const RegisterScreen: React.FC = () => {
           <TextInput
             style={[
               styles.input,
-              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background },
             ]}
             placeholder="Nazwisko"
             placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
@@ -106,7 +141,7 @@ const RegisterScreen: React.FC = () => {
           <TextInput
             style={[
               styles.input,
-              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background },
             ]}
             placeholder="Adres e-mail"
             placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
@@ -118,7 +153,7 @@ const RegisterScreen: React.FC = () => {
           <TextInput
             style={[
               styles.input,
-              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background },
             ]}
             placeholder="Numer telefonu"
             placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
@@ -129,7 +164,7 @@ const RegisterScreen: React.FC = () => {
           <TextInput
             style={[
               styles.input,
-              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background },
             ]}
             placeholder="Hasło"
             placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
@@ -140,7 +175,7 @@ const RegisterScreen: React.FC = () => {
           <TextInput
             style={[
               styles.input,
-              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background }
+              { borderColor: themeColors.icon, color: themeColors.text, backgroundColor: themeColors.background },
             ]}
             placeholder="Potwierdź hasło"
             placeholderTextColor={isDarkMode ? "#9BA1A6" : "#687076"}
@@ -148,8 +183,6 @@ const RegisterScreen: React.FC = () => {
             onChangeText={setConfirmPassword}
             secureTextEntry
           />
-
-          {/* Checkbox for Terms and Conditions */}
           <TouchableOpacity
             style={styles.checkboxContainer}
             onPress={() => setAcceptTerms(!acceptTerms)}
@@ -158,7 +191,7 @@ const RegisterScreen: React.FC = () => {
               Akceptuję{" "}
               <Text
                 style={[styles.linkText, { color: "#007AFF" }]}
-                onPress={() => setCurrentView("terms")} // Navigate to Terms view
+                onPress={() => setCurrentView("terms")}
               >
                 regulamin
               </Text>
@@ -169,8 +202,6 @@ const RegisterScreen: React.FC = () => {
               color={themeColors.tint}
             />
           </TouchableOpacity>
-
-          {/* Checkbox for Data Processing Consent */}
           <TouchableOpacity
             style={styles.checkboxContainer}
             onPress={() => setDataConsent(!dataConsent)}
@@ -184,8 +215,6 @@ const RegisterScreen: React.FC = () => {
               color={themeColors.tint}
             />
           </TouchableOpacity>
-
-          {/* Register Button at Bottom */}
           <TouchableOpacity
             style={[styles.registerButton, { backgroundColor: themeColors.tint }]}
             onPress={handleRegister}
@@ -196,7 +225,6 @@ const RegisterScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
       ) : (
-        // Show Terms component when currentView is "terms"
         <Terms onBack={() => setCurrentView("register")} />
       )}
     </>

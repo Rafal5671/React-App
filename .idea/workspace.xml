@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of terms and info">
-      <change afterPath="$PROJECT_DIR$/components/Terms.tsx" afterDir="false" />
+    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="terms to register">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +139,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733252645807</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="terms to register">
+      <option name="closed" value="true" />
+      <created>1733254184291</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1733254184291</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -164,6 +173,7 @@
     <MESSAGE value="addition of worker" />
     <MESSAGE value="fixing worker issues" />
     <MESSAGE value="addition of terms and info" />
-    <option name="LAST_COMMIT_MESSAGE" value="addition of terms and info" />
+    <MESSAGE value="terms to register" />
+    <option name="LAST_COMMIT_MESSAGE" value="terms to register" />
   </component>
 </project>
