@@ -88,7 +88,7 @@ export default function HomeScreen() {
             />
         </View>
       </View>
-      {showCarousel && <CarouselSlider />}
+
       {showProductZone && <ProductZone />}
     </ScrollView>
   );

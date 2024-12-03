@@ -4,17 +4,13 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="connection of order issue and product quantity to database">
+    <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="fixing worker issues">
+      <change afterPath="$PROJECT_DIR$/components/AboutUs.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/components/Regulations.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/_layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/result.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/result.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(tabs)/search.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/search.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/OrderManagementScreen.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/OrderManagementScreen.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/constants/config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/constants/config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProfileZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileZone.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +23,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="issue" />
+        <entry key="$PROJECT_DIR$" value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -51,7 +47,7 @@
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;fix-worker&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/rafal/Desktop/react native/ReactAPP&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
   }
@@ -129,7 +125,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732805588508</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fixing worker issues">
+      <option name="closed" value="true" />
+      <created>1733236536062</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1733236536062</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -153,6 +157,7 @@
     <MESSAGE value="addition of price to filter" />
     <MESSAGE value="pin color" />
     <MESSAGE value="addition of worker" />
-    <option name="LAST_COMMIT_MESSAGE" value="addition of worker" />
+    <MESSAGE value="fixing worker issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixing worker issues" />
   </component>
 </project>

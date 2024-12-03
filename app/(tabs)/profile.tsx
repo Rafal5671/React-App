@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, useColorScheme, Alert, TouchableOpacity, Text } from "react-native";
 import { Colors } from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import ProfileZone from "@/components/ProfileZone";
+import Regulations from "@/components/Regulations"; // Import Regulations component
+import AboutUs from "@/components/AboutUs"; // Import AboutUs component
 import Login from "@/components/Login";
 import { useAuth } from "@/context/AuthContext";
-import {CONFIG} from "@/constants/config";
+import { CONFIG } from "@/constants/config";
 
 const ProfileScreen: React.FC = () => {
   const { isLoggedIn, user, logout } = useAuth(); // Use AuthContext
@@ -13,6 +15,8 @@ const ProfileScreen: React.FC = () => {
   const isDarkMode = colorScheme === "dark";
   const themeColors = isDarkMode ? Colors.dark : Colors.light;
   const router = useRouter();
+
+  const [currentView, setCurrentView] = useState<"profile" | "regulations" | "aboutUs">("profile");
 
   useEffect(() => {
     if (isLoggedIn && user?.userType === "WORKER") {
@@ -22,24 +26,34 @@ const ProfileScreen: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch(`http:///${CONFIG.serverIp}/api/logout`, {
+      await fetch(`http://${CONFIG.serverIp}/api/logout`, {
         method: "GET",
         credentials: "include",
       });
       logout(); // Use logout from AuthContext
-      Alert.alert("Success", "Logged out successfully!");
+      Alert.alert("Sukces", "Wylogowano pomyślnie!");
     } catch (error) {
       console.error("Logout error:", error);
-      Alert.alert("Error", "Failed to log out.");
+      Alert.alert("Błąd", "Nie udało się wylogować.");
     }
   };
 
   return (
     <View style={[styles.container, { backgroundColor: themeColors.background }]}>
       {isLoggedIn ? (
-        <View style={{ flex: 1, width: "100%" }}>
-          <ProfileZone user={user} onLogout={handleLogout} />
-        </View>
+        currentView === "profile" ? (
+          <View style={{ flex: 1, width: "100%" }}>
+            <ProfileZone
+              user={user}
+              onLogout={handleLogout}
+              onNavigate={setCurrentView} // Pass the navigation function
+            />
+          </View>
+        ) : currentView === "regulations" ? (
+          <Regulations onBack={() => setCurrentView("profile")} />
+        ) : currentView === "aboutUs" ? (
+          <AboutUs onBack={() => setCurrentView("profile")} />
+        ) : null
       ) : (
         <Login />
       )}

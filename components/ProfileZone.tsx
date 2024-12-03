@@ -20,9 +20,10 @@ interface User {
 interface ProfileZoneProps {
   user: User | null;
   onLogout: () => void;
+  onNavigate: (view: "regulations" | "aboutUs") => void;
 }
 
-const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
+const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout, onNavigate }) => {
   const [view, setView] = useState<"profile" | "orders" | "comments">("profile");
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === "dark";
@@ -78,16 +79,6 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
                 right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
               />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
-              <List.Item
-                title="Reklamacje i zwroty"
-                titleStyle={{ color: colors.text }}
-                left={() => (
-                  <List.Icon icon="package-variant-closed" color={colors.icon} />
-                )}
-                right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
-              />
-            </TouchableOpacity>
           </View>
 
           <Divider style={[styles.divider, { backgroundColor: colors.icon }]} />
@@ -95,17 +86,10 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
           {/* Sekcja pomocy */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: colors.text }]}>Pomoc</Text>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
+
+            <TouchableOpacity activeOpacity={0.8} onPress={() => onNavigate("regulations")}>
               <List.Item
-                title="Skontaktuj się z nami"
-                titleStyle={{ color: colors.text }}
-                left={() => <List.Icon icon="headset" color={colors.icon} />}
-                right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
-              <List.Item
-                title="Centrum pomocy"
+                title="Regulamin"
                 titleStyle={{ color: colors.text }}
                 left={() => (
                   <List.Icon icon="help-circle-outline" color={colors.icon} />
@@ -113,7 +97,7 @@ const ProfileZone: React.FC<ProfileZoneProps> = ({ user, onLogout }) => {
                 right={() => <List.Icon icon="chevron-right" color={colors.icon} />}
               />
             </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => {}}>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => onNavigate("aboutUs")}>
               <List.Item
                 title="O nas"
                 titleStyle={{ color: colors.text }}
