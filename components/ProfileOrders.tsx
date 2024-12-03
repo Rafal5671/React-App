@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, StyleSheet, ScrollView, ActivityIndicator,useColorScheme } from "react-native";
 import { List, Divider, Text, IconButton } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
+import { CONFIG } from "@/constants/config";
 
 interface Order {
   id: number;
@@ -29,7 +30,7 @@ const ProfileOrders: React.FC<ProfileOrdersProps> = ({ userEmail, onBack }) => {
       setLoadingOrders(true);
       try {
         const response = await fetch(
-          `http:///192.168.100.9:8082/api/order/user/${userEmail}`
+          `http:///${CONFIG.serverIp}/api/order/user/${userEmail}`
         );
         if (!response.ok) throw new Error("Failed to fetch orders");
         const data = await response.json();

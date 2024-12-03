@@ -9,10 +9,12 @@ import {
   Alert,
   Modal,
   TextInput,
-  ScrollView,
-} from 'react-native';
+  ScrollView
+} from "react-native";
+import { Product } from "@/types/Product";
+import { Stack } from "expo-router";
+import { CONFIG } from "@/constants/config";
 import { Picker } from '@react-native-picker/picker';
-import { Stack } from 'expo-router';
 
 const issueTypes = [
   { label: 'Brak produktu', value: 'NO_PRODUCT' },
@@ -37,7 +39,7 @@ const OrderManagementScreen = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://192.168.100.9:8082/api/order/all');
+        const response = await fetch(`http://${CONFIG.serverIp}/api/order/all`); // Zmień URL na odpowiedni
         if (!response.ok) {
           throw new Error('Nie udało się załadować zamówień');
         }
@@ -62,7 +64,9 @@ const OrderManagementScreen = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://192.168.100.9:8082/api/products/dto');
+        const response = await fetch(
+          `http:///${CONFIG.serverIp}/api/products/dto`
+        );
         if (!response.ok) {
           throw new Error('Nie udało się załadować produktów');
         }
@@ -85,14 +89,16 @@ const OrderManagementScreen = () => {
   // Aktualizacja statusu zamówienia
   const updateOrderStatus = async (id, newState) => {
     try {
-      const response = await fetch(`http://192.168.100.9:8082/api/order/update/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ state: newState }),
-      });
-
+      const response = await fetch(
+        `http://${CONFIG.serverIp}/api/order/update/${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ state: newState }),
+        }
+      );
       if (!response.ok) {
         throw new Error('Nie udało się zaktualizować statusu zamówienia');
       }
@@ -135,7 +141,7 @@ const OrderManagementScreen = () => {
     }));
 
     try {
-      const response = await fetch('http://192.168.100.9:8082/api/products/quantity', {
+      const response = await fetch(`http://${CONFIG.serverIp}/api/products/quantity`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +152,6 @@ const OrderManagementScreen = () => {
       if (!response.ok) {
         throw new Error('Nie udało się zaktualizować stanów produktów');
       }
-
       Alert.alert('Sukces', 'Stany produktów zostały zaktualizowane.');
 
       // Reset formularza i stanu
@@ -173,7 +178,7 @@ const OrderManagementScreen = () => {
 
     try {
       const response = await fetch(
-        `http://192.168.100.9:8082/api/order/${selectedOrderId}/add-issue`,
+        `http://${CONFIG.serverIp}/api/order/${selectedOrderId}/add-issue`,
         {
           method: 'PATCH',
           headers: {
@@ -197,6 +202,8 @@ const OrderManagementScreen = () => {
           order.id === selectedOrderId ? updatedOrder : order
         )
       );
+
+  const logout = () => {};
 
       Alert.alert(
         'Sukces',
@@ -281,8 +288,9 @@ const OrderManagementScreen = () => {
         >
           <Text style={styles.floatingButtonText}>Zgłoś braki</Text>
         </TouchableOpacity>
-
-        {/* Modal zgłaszania nieścisłości */}
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Text style={styles.buttonText}>Wyloguj</Text>
+        </TouchableOpacity>
         <Modal
           animationType="slide"
           transparent={true}
@@ -457,6 +465,15 @@ const styles = StyleSheet.create({
   orderText: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  logoutButton: {
+    position: "absolute",
+    right: 20,
+    top: 40, // Ustaw przycisk w odpowiednim miejscu, np. w prawym górnym rogu
+    backgroundColor: "#d9534f",
+    padding: 15,
+    borderRadius: 50,
+    elevation: 5,
   },
   bold: {
     fontWeight: 'bold',

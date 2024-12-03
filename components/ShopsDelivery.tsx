@@ -4,6 +4,7 @@ import MapView, { Marker, Callout } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Colors } from '@/constants/Colors';
 import Svg, { Path } from 'react-native-svg';
+import { CONFIG } from '@/constants/config';
 
 interface Store {
   id: number;
@@ -68,7 +69,7 @@ const ShopsDelivery: React.FC<ShopsDeliveryProps> = ({ onStoreSelect }) => {
   useEffect(() => {
     const fetchStores = async () => {
       try {
-        const response = await fetch(`http://192.168.1.101:8082/api/shop`);
+        const response = await fetch(`http://${CONFIG.serverIp}/api/shop`);
         const data = await response.json();
         setStores(data);
       } catch (error) {

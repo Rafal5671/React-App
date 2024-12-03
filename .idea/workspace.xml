@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="45f8e4aa-0641-4da2-9547-b94432b96408" name="Changes" comment="addition of worker">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/(tabs)/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/product/[id].tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/profile.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/profile.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/(tabs)/result.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(tabs)/result.tsx" afterDir="false" />
@@ -13,6 +14,11 @@
       <change beforePath="$PROJECT_DIR$/app/delivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/delivery.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/register.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProfileComments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileComments.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ProfileOrders.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileOrders.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/ShopsDelivery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ShopsDelivery.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/Opinion.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Opinion.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProductZone.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProductZone.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/ProfileComments.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/ProfileComments.tsx" afterDir="false" />
@@ -55,7 +61,7 @@
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Fixes&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/rafal/Desktop/react native/ReactAPP&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;
   }

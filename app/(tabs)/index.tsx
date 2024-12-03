@@ -6,6 +6,7 @@ import ProductZone from '@/components/ProductZone';
 import CarouselSlider from '@/components/Slider';
 import { Colors } from '@/constants/Colors';
 import { useRouter } from 'expo-router';
+
 const categories = [
   {
     title: "Laptopy i komputery",

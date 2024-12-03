@@ -75,7 +75,7 @@ const SearchProductCard: React.FC<ProductCardProps> = ({ product }) => {
                             ? product.image
                             : `https://via.placeholder.com/120x200?text=Brak+zdjęcia`,
                     }}
-                    style={styles.image}
+                    style={[styles.image, { resizeMode: "contain" }]}
                 />
 
                 {/* Szczegóły produktu */}
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
         height: "100%",
     },
     image: {
-        width: 120,
+        width: 150,
         height: "100%",
         resizeMode: "cover",
         borderTopLeftRadius: 10,

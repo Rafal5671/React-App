@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Text, IconButton, Divider, List } from "react-native-paper";
 import { Colors } from "@/constants/Colors";
-
+import {CONFIG} from "@/constants/config";
 interface Comment {
   id: number;
   productId: number;
@@ -37,7 +37,7 @@ const ProfileComments: React.FC<ProfileCommentsProps> = ({ userEmail, onBack }) 
       try {
         console.log(`Fetching comments for userEmail: ${userEmail}`);
         const response = await fetch(
-          `http:///192.168.100.9:8082/api/comments/user/${userEmail}`
+          `http:///${CONFIG.serverIp}/api/comments/user/${userEmail}`
         );
         if (!response.ok) {
           const errorDetails = await response.text();
