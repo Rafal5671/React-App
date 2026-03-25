@@ -1,50 +1,43 @@
-# Welcome to your Expo app 👋
+# MobileStoreApp
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> Mobile e-commerce application built with React Native and Expo.
 
-## Get started
+---
 
-1. Install dependencies
+## Build Status
 
-   ```bash
-   npm install
-   ```
+![Platform](https://img.shields.io/badge/platform-Mobile-blue)
+![Frontend](https://img.shields.io/badge/frontend-React%20Native-lightblue)
+![Framework](https://img.shields.io/badge/framework-Expo-orange)
+![Language](https://img.shields.io/badge/language-TypeScript-blue)
 
-2. Start the app
+---
 
-   ```bash
-    npx expo start
-   ```
+## Description
 
-In the output, you'll find options to open the app in a
+MobileStoreApp is a mobile application for an online store, developed using **React Native** with **Expo**. It provides users with a simple interface to browse products, view details, and manage their shopping cart. The app supports Android, iOS (via simulator), and Expo Go for testing.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+The project demonstrates mobile development practices including component-based architecture, hooks, context API, and navigation.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Features
 
-When you're ready, run:
+* Browse and view product listings
+* Product details and descriptions
+* Shopping cart management
+* User-friendly mobile interface
+* Supports Android and iOS platforms
+* Built with React Native components and Expo tools
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Technology Stack
 
-## Learn more
+* **Frontend:** React Native, TypeScript
+* **Framework:** Expo
+* **State Management:** React Context and Hooks
+* **Routing & Navigation:** React Navigation
+* **Styling:** CSS-in-JS / StyleSheet
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
